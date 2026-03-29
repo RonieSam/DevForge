@@ -61,6 +61,10 @@ public class Request {
 	public void setRole(Role requestedRole) {
 		this.requestedRole=requestedRole;
 	}
+	
+	public void setStatus(Status status) {
+		this.status=status;
+	}
 
 	
 	

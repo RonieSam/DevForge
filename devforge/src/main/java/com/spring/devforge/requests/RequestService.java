@@ -50,13 +50,17 @@ public class RequestService {
 	}
 
 	public Request handleRequestCreation(String slug,Role role) throws AccessDeniedException {
+		if(role==null)role=Role.USER;
 		Users user=getAuthenticatedUser();
 		Organization org=orgRepo.findBySlug(slug);
 		if(org==null)throw new EntityNotFoundException("The Organization is invalid");
 		if(memRepo.existsByUserIdAndOrgId(user.getId(), org.getId()))throw new AccessDeniedException("Already part of this organization");
 		if(role==Role.OWNER)throw new IllegalArgumentException("Owner roles can not be requested");
 		Request req=repo.findByUserIdAndOrgId(user.getId(), org.getId());
-		if(req!=null)req.setRole(role);
+		if(req!=null) {
+			req.setRole(role);
+			req.setStatus(Status.PENDING);
+		}
 		else {
 			req=new Request(user,org,role);
 		}
@@ -87,6 +91,7 @@ public class RequestService {
 		
 		Users user=getAuthenticatedUser();
 		Membership reqMembership=memRepo.findByUserIdAndOrgId(user.getId(), req.getOrg().getId() );
+		if(reqMembership==null)throw new AuthenticationException("Not part of the organization");
 		if(memService.isDenied(reqMembership.getRole(),req.getRequestedRole()))throw new AccessDeniedException("Do not have enough permmsion to perform this action");
 		if(status==Status.APPROVED) {
 			Membership newMembership=new Membership(req.getUser(),req.getOrg(),req.getRequestedRole());

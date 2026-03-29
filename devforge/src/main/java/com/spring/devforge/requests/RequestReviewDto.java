@@ -1,5 +1,7 @@
 package com.spring.devforge.requests;
 
+import jakarta.validation.constraints.NotNull;
+
 public class RequestReviewDto {
 	
 		Status status;
