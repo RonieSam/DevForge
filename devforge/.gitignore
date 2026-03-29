@@ -1,0 +1,102 @@
+# =========================
+
+# Java / Spring Boot
+
+# =========================
+
+target/
+build/
+*.class
+*.jar
+*.war
+*.ear
+
+# =========================
+
+# Logs
+
+# =========================
+
+logs/
+*.log
+
+# =========================
+
+# Maven
+
+# =========================
+
+.mvn/
+mvnw
+mvnw.cmd
+
+# =========================
+
+# Gradle
+
+# =========================
+
+.gradle/
+build/
+
+# =========================
+
+# IDEs
+
+# =========================
+
+# IntelliJ
+
+.idea/
+*.iml
+
+# Eclipse
+
+.project
+.classpath
+.settings/
+
+# VS Code
+
+.vscode/
+
+# =========================
+
+# OS files
+
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+
+# Environment / Secrets
+
+# =========================
+
+application.properties
+application.yml
+.env
+
+# =========================
+
+# Temporary files
+
+# =========================
+
+*.tmp
+*.swp
+*~
+
+# =========================
+
+# Node (if React frontend exists)
+
+# =========================
+
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
