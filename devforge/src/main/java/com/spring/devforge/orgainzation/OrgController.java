@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.devforge.ApiResponse;
+
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -24,23 +26,23 @@ public class OrgController {
 	OrgService orgService;
 	
 	@PostMapping("/org")
-	public ResponseEntity<OrgResponse> createOrg(@RequestBody Organization org){
-		String slug=orgService.handleOrgCreation(org);
-		return new ResponseEntity<>(new OrgResponse(slug,"Organization has been successfully created"),HttpStatus.CREATED);
+	public ResponseEntity<ApiResponse> createOrg(@RequestBody Organization org){
+		OrgData data=orgService.handleOrgCreation(org);
+		return new ResponseEntity<>(new ApiResponse(true,"Organization has been successfully created",data),HttpStatus.CREATED);
 
 	}
 	
 	@PutMapping("/org/{slug}")
-	public ResponseEntity<OrgResponse> updateOrg(@RequestBody UpdateOrgRequest req,@PathVariable String slug) throws AccessDeniedException, AuthenticationException{
-		String newSlug= orgService.handleUpdateOrg(slug, req.getName());
-		return new ResponseEntity<>(new OrgResponse(newSlug,"Organization has been successfully updated"),HttpStatus.OK);
+	public ResponseEntity<ApiResponse> updateOrg(@RequestBody UpdateOrgRequest req,@PathVariable String slug) throws AccessDeniedException, AuthenticationException{
+		OrgData data=orgService.handleUpdateOrg(slug,req.getName());
+		return new ResponseEntity<>(new ApiResponse(true,"Organization has been successfully updated",data),HttpStatus.OK);
 
 	}
 	
 	@DeleteMapping("/org/{slug}")
-	public ResponseEntity<OrgResponse> updateOrg(@PathVariable String slug) throws AuthenticationException, AccessDeniedException{
+	public ResponseEntity<ApiResponse> updateOrg(@PathVariable String slug) throws AuthenticationException, AccessDeniedException{
 		orgService.handleDeleteOrg(slug);
-		return new ResponseEntity<>(new OrgResponse(slug,"Organization has been successfully delted"),HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse(true,"Organization has been successfully deleted",null),HttpStatus.OK);
 
 	}
 }

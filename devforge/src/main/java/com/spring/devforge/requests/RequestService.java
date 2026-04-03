@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.spring.devforge.authentication.AuthService;
 import com.spring.devforge.authentication.UserDataJpa;
 import com.spring.devforge.authentication.Users;
 import com.spring.devforge.membership.Membership;
@@ -21,6 +22,8 @@ import com.spring.devforge.membership.MembershipService;
 import com.spring.devforge.membership.Role;
 import com.spring.devforge.orgainzation.OrgDataJpa;
 import com.spring.devforge.orgainzation.Organization;
+import com.spring.devforge.permissions.PermissionService;
+import com.spring.devforge.permissions.Permissions;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -42,16 +45,15 @@ public class RequestService {
 	@Autowired
 	MembershipService memService;
 	
-	public Users getAuthenticatedUser() {
-		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-		String email=auth.getName();
-		Users user=userRepo.findByEmail(email);
-		return user;
-	}
+	@Autowired
+	AuthService authService;
+	
+	@Autowired
+	PermissionService permService;
 
-	public Request handleRequestCreation(String slug,Role role) throws AccessDeniedException {
+	public RequestData handleRequestCreation(String slug,Role role) throws AccessDeniedException {
 		if(role==null)role=Role.USER;
-		Users user=getAuthenticatedUser();
+		Users user=authService.getUser();
 		Organization org=orgRepo.findBySlug(slug);
 		if(org==null)throw new EntityNotFoundException("The Organization is invalid");
 		if(memRepo.existsByUserIdAndOrgId(user.getId(), org.getId()))throw new AccessDeniedException("Already part of this organization");
@@ -59,59 +61,45 @@ public class RequestService {
 		Request req=repo.findByUserIdAndOrgId(user.getId(), org.getId());
 		if(req!=null) {
 			req.setRole(role);
-			req.setStatus(Status.PENDING);
+			req.setStatus(RequestStatus.PENDING);
 		}
 		else {
 			req=new Request(user,org,role);
 		}
 		repo.save(req);
-		return req;
+		return RequestMapper.toData(req);
 	}
-	public List<GetRequestResponse> handleGetAllRequests(String slug) throws AuthenticationException{
+	public List<RequestData> handleGetAllRequests(String slug) throws AuthenticationException{
 		Organization org=orgRepo.findBySlug(slug);
 		if(org==null)throw new EntityNotFoundException("The Organization is invalid");
-		Users user=getAuthenticatedUser();
-		if(!memRepo.existsByUserIdAndOrgId(user.getId(), org.getId()))throw new AuthenticationException("Not part of the organization");
+		memService.getMembership(slug);
 		List<Request> reqs=new ArrayList<>();
 		reqs=repo.findAllByOrgId(org.getId());
-		List<GetRequestResponse> res=new ArrayList<>();
-		for(Request r:reqs) {
-			String reviewedBy=r.getReviewedBy()!=null?r.getReviewedBy().getUsername():null;
-
-			res.add(new GetRequestResponse(r.getId(),r.getUser().getUsername(),r.getStatus(),r.getCreatedAt(),r.getRequestedRole(),reviewedBy,r.getReviewdAt()));
-			
-		}
-		return res;
+		return reqs.stream().map(RequestMapper::toData).toList();
 	}
 	
-	public Request handleReviewRequest(int id,Status status) throws AuthenticationException, AccessDeniedException, BadRequestException {
+	public RequestData handleReviewRequest(long id,RequestStatus status,String slug) throws AuthenticationException, AccessDeniedException, BadRequestException {
 		Request req=repo.findById(id).orElse(null);
 		if(req==null)throw new EntityNotFoundException("The request does not exisit");
 		if(memRepo.existsByUserIdAndOrgId(req.getUser().getId(), req.getOrg().getId()))throw new BadRequestException("User already part of the organization");
 		
-		Users user=getAuthenticatedUser();
-		Membership reqMembership=memRepo.findByUserIdAndOrgId(user.getId(), req.getOrg().getId() );
-		if(reqMembership==null)throw new AuthenticationException("Not part of the organization");
-		if(memService.isDenied(reqMembership.getRole(),req.getRequestedRole()))throw new AccessDeniedException("Do not have enough permmsion to perform this action");
-		if(status==Status.APPROVED) {
+		Membership reqMembership=memService.getMembership(slug);
+		permService.checkPermissions(reqMembership.getRole(),Permissions.REQUEST_APPROVE);
+		permService.isDenied(reqMembership.getRole(), req.getRequestedRole());
+		if(status==RequestStatus.APPROVED) {
 			Membership newMembership=new Membership(req.getUser(),req.getOrg(),req.getRequestedRole());
 			memRepo.save(newMembership);
 		}	
-		req.setAtReview(user, status);
+		req.setAtReview(reqMembership.getUser(), status);
 		repo.save(req);
-		return req;
+		return RequestMapper.toData(req);
 	}
 	
-	public void handleDeleteRequest(int id) throws AccessDeniedException {
+	public void handleDeleteRequest(long id,String slug) throws AccessDeniedException, AuthenticationException {
+		Membership reqMembership=memService.getMembership(slug);
+		permService.checkPermissions(reqMembership.getRole(), Permissions.REQUEST_DELETE);
 		Request req=repo.findById(id).orElse(null);
 		if(req==null)throw new EntityNotFoundException("The request does not exisit");
-		Users user=getAuthenticatedUser();
-		Membership reqMembership=memRepo.findByUserIdAndOrgId(user.getId(), req.getOrg().getId() );
-		if(req.getStatus()==Status.REJECTED||req.getStatus()==Status.APPROVED) {
-			repo.deleteById(id);
-			return;
-		}
-		if(memService.isDenied(reqMembership.getRole(),req.getRequestedRole()))throw new AccessDeniedException("Do not have enough permmsion to perform this action");
 		repo.deleteById(id);
 	}
 }

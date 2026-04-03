@@ -4,14 +4,16 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 
-public interface MembershipDataJpa extends JpaRepository<Membership,Integer> {
-	public boolean existsByUserIdAndOrgId(int userId,int orgId);
-	public Membership findByUserIdAndOrgId(int userId,int orgId);
-	public void deleteAllByOrgId(int orgId);
+public interface MembershipDataJpa extends JpaRepository<Membership,Long> {
+	public boolean existsByUserIdAndOrgId(long userId,long orgId);
+	@Query("SELECT m FROM Membership m JOIN FETCH m.user WHERE m.org.id=:orgId AND m.user.id=:userId")
+	public Membership findByUserIdAndOrgId(@Param("userId")long userId,@Param("orgId")long orgId);
+	public void deleteAllByOrgId(long orgId);
 	
-	public List<Membership> findAllByOrgId(int orgId);
-	public List<Membership> findAllByOrgIdAndRole(int orgId,Role role);
+	@Query("SELECT m FROM Membership m JOIN FETCH m.user WHERE m.org.id=:orgId")
+	public List<Membership> findAllByOrgId(@Param("orgId")long orgId);
 
 }

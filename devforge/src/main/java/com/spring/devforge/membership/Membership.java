@@ -23,7 +23,7 @@ import jakarta.persistence.UniqueConstraint;
 		)
 public class Membership {
 	@Id @GeneratedValue
-	private Integer id;
+	private Long id;
 	@ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="user_id")
 	private Users user;
 	@ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="org_id")
@@ -57,7 +57,7 @@ public class Membership {
 
 
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 

@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 public class Request {
 	@Id @GeneratedValue
-	private Integer id;
+	private Long id;
 	@ManyToOne(fetch=FetchType.LAZY) 
 	private Users user;
 	@ManyToOne(fetch=FetchType.LAZY) 
@@ -28,7 +28,7 @@ public class Request {
 	@Enumerated(EnumType.STRING)
 	private Role requestedRole;
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	private RequestStatus status;
 	private LocalDateTime createdAt;
 	@ManyToOne(fetch=FetchType.LAZY)
 	Users reviewedBy;
@@ -62,13 +62,13 @@ public class Request {
 		this.requestedRole=requestedRole;
 	}
 	
-	public void setStatus(Status status) {
+	public void setStatus(RequestStatus status) {
 		this.status=status;
 	}
 
 	
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 	public Users getUser() {
@@ -78,11 +78,11 @@ public class Request {
 		return org;
 	}
 
-	public Status getStatus() {
+	public RequestStatus getStatus() {
 		return status;
 	}
 
-	public void setAtReview(Users reviewedBy,Status status) {
+	public void setAtReview(Users reviewedBy,RequestStatus status) {
 		this.status=status;
 		this.reviewedBy=reviewedBy;
 		this.reviewdAt=LocalDateTime.now();
@@ -91,7 +91,7 @@ public class Request {
 	@PrePersist
 	public void setOnCreation() {
 		createdAt=LocalDateTime.now();
-		this.status=Status.PENDING;
+		this.status=RequestStatus.PENDING;
 	}
 	
 	public Request() {}

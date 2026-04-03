@@ -16,7 +16,7 @@ import jakarta.validation.constraints.Size;
 public class Users {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	@NotBlank(message="Username cannot be blank") @Size(min=3,max=15,message="Username must be within 3 to 15 characters")
 	private String username;
 	@Email(message="Email is not a valid") 
@@ -48,7 +48,7 @@ public class Users {
 	public String getEmail() {
 		return email;
 	}
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 

@@ -4,18 +4,18 @@ import java.time.LocalDateTime;
 
 import com.spring.devforge.membership.Role;
 
-public class GetRequestResponse {
-	int id;
+public class RequestData {
+	long id;
 	String username;
-	Status status;
+	RequestStatus status;
 	LocalDateTime requestedAt;
 	Role role;
 	String reviewedBy;
-	LocalDateTime reviewAt;
+	LocalDateTime reviewedAt;
 	public String getUsername() {
 		return username;
 	}
-	public Status getStatus() {
+	public RequestStatus getStatus() {
 		return status;
 	}
 	public LocalDateTime getRequestedAt() {
@@ -28,12 +28,12 @@ public class GetRequestResponse {
 		return reviewedBy;
 	}
 	public LocalDateTime getReviewAt() {
-		return reviewAt;
+		return reviewedAt;
 	}
-	public int getId() {
+	public long getId() {
 		return id;
 	}
-	public GetRequestResponse(int id,String username, Status status, LocalDateTime requestedAt, Role role, String reviewedBy,
+	public RequestData(long id,String username, RequestStatus status, LocalDateTime requestedAt, Role role, String reviewedBy,
 			LocalDateTime reviewAt) {
 		super();
 		this.id=id;
@@ -42,19 +42,9 @@ public class GetRequestResponse {
 		this.requestedAt = requestedAt;
 		this.role = role;
 		this.reviewedBy = reviewedBy;
-		this.reviewAt = reviewAt;
-	}
-	public GetRequestResponse(int id,String username, Status status, LocalDateTime requestedAt, Role role) {
-		super();
-		this.id=id;
-		this.username = username;
-		this.status = status;
-		this.requestedAt = requestedAt;
-		this.role = role;
-		this.reviewedBy = null;
-		this.reviewAt = null;
+		this.reviewedAt = reviewAt;
 	}
 	
-	public GetRequestResponse() {}
+	
 	
 }

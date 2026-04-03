@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.devforge.ApiResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -26,32 +27,30 @@ public class MembershipController {
 	@Autowired
 	MembershipService service;
 	@PostMapping("/org/{slug}/users")
-	public ResponseEntity<MembershipResponse> addNewMember(@PathVariable String slug,@RequestBody MembershipRequest req) throws AccessDeniedException, AuthenticationException{
-		service.handleMembershipCreation(slug, req.getUsername(),req.getRole());
-		return new ResponseEntity<>(new MembershipResponse(req.getRole(),req.getUsername(),slug,"The membership was created successfully"),HttpStatus.CREATED);
+	public ResponseEntity<ApiResponse> addNewMember(@PathVariable String slug,@RequestBody MembershipRequest req) throws AccessDeniedException, AuthenticationException{
+		MembershipData data=service.handleMembershipCreation(slug, req.getUsername(),req.getRole());
+		return new ResponseEntity<>(new ApiResponse(true,"New member is added to organization",data),HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/org/{slug}/users/{username}")
-	public ResponseEntity<MembershipResponse> deleteMember(@PathVariable String slug,@PathVariable String username) throws AccessDeniedException, EntityNotFoundException, AuthenticationException{
+	public ResponseEntity<ApiResponse> deleteMember(@PathVariable String slug,@PathVariable String username) throws AccessDeniedException, EntityNotFoundException, AuthenticationException{
 		service.handleMembershipDeletion(slug, username);
-		return new ResponseEntity<>(new MembershipResponse(username,slug,"The membership was deleted successfully"),HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse(true,"Member is removed from organization",null),HttpStatus.OK);
 	}
 	
 	@PutMapping("/org/{slug}/users/{username}")
-	public ResponseEntity<MembershipResponse> updateMember(@PathVariable String slug,@PathVariable String username,@RequestBody MembershipRequest req) throws EntityNotFoundException, AccessDeniedException, AuthenticationException{
-		service.handleMembershipUpdation(slug, username,req.getRole());
-		return new ResponseEntity<>(new MembershipResponse(req.getRole(),username,slug,"The membership was updated successfully"),HttpStatus.OK);
+	public ResponseEntity<ApiResponse> updateMember(@PathVariable String slug,@PathVariable String username,@RequestBody MembershipRequest req) throws EntityNotFoundException, AccessDeniedException, AuthenticationException{
+		MembershipData data=service.handleMembershipUpdation(slug, username,req.getRole());
+		return new ResponseEntity<>(new ApiResponse(true,"Membership has been updated",data),HttpStatus.OK);
 
 		}
 	
 
 	@GetMapping("/org/{slug}/users")
-	public ResponseEntity<List<GetMembersResponse>> getAllUsers(@PathVariable String slug) throws AuthenticationException{
-		return new ResponseEntity<>(service.handleGetAllMembers(slug), HttpStatus.OK);	
+	public ResponseEntity<ApiResponse> getAllUsers(@PathVariable String slug) throws AuthenticationException{
+		List<MembershipData> data=service.handleGetAllMembers(slug);
+		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
 	}
 	
-	@GetMapping("/org/{slug}/users/{role}")
-	public ResponseEntity<List<GetMembersResponse>> getAllUsersWithRole(@PathVariable String slug,@PathVariable Role role) throws AuthenticationException{
-		return new ResponseEntity<>(service.handleGetAllMembersWithRole(slug,role), HttpStatus.OK);	
-	}
+	
 }

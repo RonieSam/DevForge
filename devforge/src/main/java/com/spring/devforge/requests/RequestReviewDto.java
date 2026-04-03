@@ -4,14 +4,14 @@ import jakarta.validation.constraints.NotNull;
 
 public class RequestReviewDto {
 	
-		Status status;
+		RequestStatus status;
 		
-		public RequestReviewDto(Status status) {
+		public RequestReviewDto(RequestStatus status) {
 			super();
 			this.status=status;
 		}
 		
-		public Status getStatus() {
+		public RequestStatus getStatus() {
 			return status;
 		}
 		

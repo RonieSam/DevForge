@@ -15,6 +15,8 @@ import com.spring.devforge.membership.Membership;
 import com.spring.devforge.membership.MembershipDataJpa;
 import com.spring.devforge.membership.MembershipService;
 import com.spring.devforge.membership.Role;
+import com.spring.devforge.permissions.PermissionService;
+import com.spring.devforge.permissions.Permissions;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -34,7 +36,12 @@ public class OrgService {
 	@Autowired
 	MembershipService membershipService;
 	
-	public String handleOrgCreation(Organization org)throws EntityNotFoundException{
+	@Autowired
+	PermissionService permService;
+	
+		
+	
+	public OrgData handleOrgCreation(Organization org)throws EntityNotFoundException{
 		
 		Authentication auth=SecurityContextHolder.getContext().getAuthentication();	
 		String email=auth.getName();
@@ -55,21 +62,15 @@ public class OrgService {
 		org.setSlug(slug);
 		repo.save(org);
 		membershipService.handleOwnerCreation(org, owner);
-		return org.getSlug();
+		return OrgMapper.toData(org);
 	}
 	
 	
-	public String handleUpdateOrg(String slug,String name) throws AccessDeniedException, AuthenticationException{
-			Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-			String email=auth.getName();
-			Users requester=userRepo.findByEmail(email);
-			if(requester==null)throw new AuthenticationException("Requester is unauthorized");
-			Organization org=repo.findBySlug(slug);
-			if(org==null)throw new EntityNotFoundException("Organization was not found");
-			Membership requesterMembership=membershipRepo.findByUserIdAndOrgId(requester.getId(),org.getId());
+	public OrgData handleUpdateOrg(String slug,String name) throws AccessDeniedException, AuthenticationException{
+			Membership requesterMembership=membershipService.getMembership(slug);
 			if(requesterMembership==null)throw new AccessDeniedException("Requester is not the part of the organization");
-			Role requesterRole=requesterMembership.getRole();
-			if(requesterRole!=Role.OWNER&&requesterRole!=Role.ADMIN)throw new AccessDeniedException("Requester doesnt have enough permissions");
+			permService.checkPermissions(requesterMembership.getRole(), Permissions.ORGANIZATION_UPDATE);
+			Organization org=repo.findBySlug(slug);
 			org.setName(name);
 			String baseSlug=org.getName()
 					.toLowerCase()
@@ -84,21 +85,15 @@ public class OrgService {
 			}
 			org.setSlug(newSlug);
 			repo.save(org);
-			return newSlug;
+			return OrgMapper.toData(org);
 	}
 	
 	@Transactional
 	public void handleDeleteOrg(String slug) throws AuthenticationException, AccessDeniedException {
-		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-		String email=auth.getName();
-		Users requester=userRepo.findByEmail(email);
-		if(requester==null)throw new AuthenticationException("Requester is unauthorized");
-		Organization org=repo.findBySlug(slug);
-		if(org==null)throw new EntityNotFoundException("Organization was not found");
-		Membership requesterMembership=membershipRepo.findByUserIdAndOrgId(requester.getId(),org.getId());
+		Membership requesterMembership=membershipService.getMembership(slug);
 		if(requesterMembership==null)throw new AccessDeniedException("Requester is not the part of the organization");
-		Role requesterRole=requesterMembership.getRole();
-		if(requesterRole!=Role.OWNER)throw new AccessDeniedException("Requester doesnt have enough permissions");
+		permService.checkPermissions(requesterMembership.getRole(), Permissions.ORGAINZATION_DELETE);
+		Organization org=repo.findBySlug(slug);
 		membershipRepo.deleteAllByOrgId(org.getId());
 		repo.deleteById(org.getId());
 	}

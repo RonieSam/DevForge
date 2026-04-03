@@ -1,6 +1,6 @@
 package com.spring.devforge.requests;
 
-public enum Status {
+public enum RequestStatus {
 	PENDING,
 	REJECTED,
 	APPROVED
