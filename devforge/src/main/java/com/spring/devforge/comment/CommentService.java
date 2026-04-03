@@ -3,7 +3,6 @@ package com.spring.devforge.comment;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
-import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class CommentService {
 	@Autowired
 	PermissionService permService;
 	
-	public CommentData handleAddComment(long taskId,String content) throws AuthenticationException, AccessDeniedException {
+	public CommentData handleAddComment(long taskId,String content) throws  AccessDeniedException {
 		Tasks task=taskRepo.findById(taskId).orElseThrow(()->new EntityNotFoundException("Task does not exisit"));
 		Membership reqMembership=memService.getMembership(task.getProject().getOrg().getSlug());
 		permService.checkPermissions(reqMembership.getRole(),Permissions.COMMENT_CREATE);
@@ -41,7 +40,7 @@ public class CommentService {
 		return CommentMapper.toData(com);
 	}
 	
-	public void handleDeleteComments(long taskId,long commentId) throws AuthenticationException, AccessDeniedException {
+	public void handleDeleteComments(long taskId,long commentId) throws  AccessDeniedException {
 		Comments com=repo.findById(commentId).orElseThrow(()->new EntityNotFoundException("Comment does not exisit"));
 		Tasks task=taskRepo.findById(taskId).orElseThrow(()->new EntityNotFoundException("Task does not exisit"));
 		Membership reqMembership=memService.getMembership(task.getProject().getOrg().getSlug());
@@ -51,7 +50,7 @@ public class CommentService {
 		repo.deleteById(commentId);
 	}
 	
-	public List<CommentData> handleGetAllComments(long taskId) throws AuthenticationException {
+	public List<CommentData> handleGetAllComments(long taskId)  {
 		Tasks task=taskRepo.findById(taskId).orElseThrow(()->new EntityNotFoundException("Task does not exisit"));
 		memService.getMembership(task.getProject().getOrg().getSlug());
 		List<Comments> comments=repo.findAllByTaskId(taskId);

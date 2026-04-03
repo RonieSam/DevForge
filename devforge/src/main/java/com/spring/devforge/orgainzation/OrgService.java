@@ -2,7 +2,6 @@ package com.spring.devforge.orgainzation;
 
 import java.nio.file.AccessDeniedException;
 
-import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -14,7 +13,6 @@ import com.spring.devforge.authentication.Users;
 import com.spring.devforge.membership.Membership;
 import com.spring.devforge.membership.MembershipDataJpa;
 import com.spring.devforge.membership.MembershipService;
-import com.spring.devforge.membership.Role;
 import com.spring.devforge.permissions.PermissionService;
 import com.spring.devforge.permissions.Permissions;
 
@@ -66,7 +64,7 @@ public class OrgService {
 	}
 	
 	
-	public OrgData handleUpdateOrg(String slug,String name) throws AccessDeniedException, AuthenticationException{
+	public OrgData handleUpdateOrg(String slug,String name) throws AccessDeniedException{
 			Membership requesterMembership=membershipService.getMembership(slug);
 			if(requesterMembership==null)throw new AccessDeniedException("Requester is not the part of the organization");
 			permService.checkPermissions(requesterMembership.getRole(), Permissions.ORGANIZATION_UPDATE);
@@ -89,7 +87,7 @@ public class OrgService {
 	}
 	
 	@Transactional
-	public void handleDeleteOrg(String slug) throws AuthenticationException, AccessDeniedException {
+	public void handleDeleteOrg(String slug) throws  AccessDeniedException {
 		Membership requesterMembership=membershipService.getMembership(slug);
 		if(requesterMembership==null)throw new AccessDeniedException("Requester is not the part of the organization");
 		permService.checkPermissions(requesterMembership.getRole(), Permissions.ORGAINZATION_DELETE);

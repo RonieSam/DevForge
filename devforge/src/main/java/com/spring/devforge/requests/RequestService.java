@@ -1,16 +1,12 @@
 package com.spring.devforge.requests;
 
 import java.nio.file.AccessDeniedException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.AuthenticationException;
-
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 
 import com.spring.devforge.authentication.AuthService;
@@ -69,16 +65,17 @@ public class RequestService {
 		repo.save(req);
 		return RequestMapper.toData(req);
 	}
-	public List<RequestData> handleGetAllRequests(String slug) throws AuthenticationException{
+	public List<RequestData> handleGetAllRequests(String slug) throws  AccessDeniedException{
 		Organization org=orgRepo.findBySlug(slug);
 		if(org==null)throw new EntityNotFoundException("The Organization is invalid");
-		memService.getMembership(slug);
+		Membership membership=memService.getMembership(slug);
+		permService.checkPermissions(membership.getRole(),Permissions.REQUEST_VIEW);
 		List<Request> reqs=new ArrayList<>();
 		reqs=repo.findAllByOrgId(org.getId());
 		return reqs.stream().map(RequestMapper::toData).toList();
 	}
 	
-	public RequestData handleReviewRequest(long id,RequestStatus status,String slug) throws AuthenticationException, AccessDeniedException, BadRequestException {
+	public RequestData handleReviewRequest(long id,RequestStatus status,String slug) throws AccessDeniedException, BadRequestException {
 		Request req=repo.findById(id).orElse(null);
 		if(req==null)throw new EntityNotFoundException("The request does not exisit");
 		if(memRepo.existsByUserIdAndOrgId(req.getUser().getId(), req.getOrg().getId()))throw new BadRequestException("User already part of the organization");
@@ -95,7 +92,7 @@ public class RequestService {
 		return RequestMapper.toData(req);
 	}
 	
-	public void handleDeleteRequest(long id,String slug) throws AccessDeniedException, AuthenticationException {
+	public void handleDeleteRequest(long id,String slug) throws AccessDeniedException {
 		Membership reqMembership=memService.getMembership(slug);
 		permService.checkPermissions(reqMembership.getRole(), Permissions.REQUEST_DELETE);
 		Request req=repo.findById(id).orElse(null);

@@ -19,16 +19,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 
 @Entity
+@Table(uniqueConstraints= {@UniqueConstraint(columnNames= {"org_id","name"})})
 public class Project {
 	@Id @GeneratedValue
 	private Long id;
-	@NotBlank @Size(min=5) @Column(unique=true)
+	@NotBlank @Size(min=5) 
 	private String name;
 	@ManyToOne(fetch=FetchType.LAZY) @NotNull @JoinColumn(name="owner_id")
 	private Users createdBy;

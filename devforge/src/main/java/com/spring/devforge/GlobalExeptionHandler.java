@@ -2,8 +2,7 @@ package com.spring.devforge;
 
 import java.nio.file.AccessDeniedException;
 
-import javax.naming.AuthenticationException;
-
+import org.springframework.security.core.AuthenticationException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

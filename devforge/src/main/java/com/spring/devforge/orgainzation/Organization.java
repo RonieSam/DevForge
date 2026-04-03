@@ -29,7 +29,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(
-		uniqueConstraints=@UniqueConstraint(columnNames={"owner_id","slug"})
+		uniqueConstraints=@UniqueConstraint(columnNames={"slug"})
 		)
 public class Organization {
 	

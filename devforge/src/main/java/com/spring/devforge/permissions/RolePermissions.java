@@ -21,6 +21,7 @@ public class RolePermissions {
 				
 				REQUEST_APPROVE,
 				REQUEST_DELETE,
+				REQUEST_VIEW,
 				
 				TASK_CREATE,
 				TASK_UPDATE,
@@ -45,6 +46,8 @@ public class RolePermissions {
 				
 				REQUEST_APPROVE,
 				REQUEST_DELETE,
+				REQUEST_VIEW,
+
 				
 				TASK_CREATE,
 				TASK_UPDATE,

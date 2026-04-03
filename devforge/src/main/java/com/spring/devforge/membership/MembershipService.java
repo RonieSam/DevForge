@@ -1,19 +1,12 @@
 package com.spring.devforge.membership;
 
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.AuthenticationException;
-
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import com.spring.devforge.authentication.AuthService;
@@ -25,8 +18,7 @@ import com.spring.devforge.permissions.PermissionService;
 import com.spring.devforge.permissions.Permissions;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
+
 
 @Service
 public class MembershipService {
@@ -50,7 +42,7 @@ public class MembershipService {
 	
 	
 	
-	public Membership getMembership(String slug) throws AuthenticationException {
+	public Membership getMembership(String slug) throws InsufficientAuthenticationException{
 	    Users user=authService.getUser();
 	    System.out.println(user.getUsername());
 
@@ -61,7 +53,7 @@ public class MembershipService {
 	    Membership membership = repo.findByUserIdAndOrgId(user.getId(), org.getId());
 
 	    if (membership == null) {
-	        throw new AuthenticationException("Not part of this organization");
+	        throw new InsufficientAuthenticationException("Not part of this organization");
 	    }
 
 	    return membership;
@@ -104,7 +96,8 @@ public class MembershipService {
 		Organization org=orgRepo.findBySlug(slug);
 		if(user==null)throw new EntityNotFoundException("The user does not exsist");
 		
-		
+		Membership membership=repo.findByUserIdAndOrgId(user.getId(), org.getId());
+		if(membership==null)throw new IllegalArgumentException("The user is already part of the organization");
 		if(reqMembership.getRole()==Role.OWNER&&role==Role.OWNER) {
 			reqMembership.setRole(Role.ADMIN);
 			repo.save(reqMembership);
@@ -113,8 +106,6 @@ public class MembershipService {
 
 		}
 		
-		Membership membership=repo.findByUserIdAndOrgId(user.getId(), org.getId());
-		if(membership==null)throw new EntityNotFoundException("User is not part of the organization");
 		membership.setRole(role);
 		repo.save(membership);
 		return MemberMapper.toData(membership);

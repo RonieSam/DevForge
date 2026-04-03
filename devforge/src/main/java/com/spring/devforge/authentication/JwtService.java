@@ -5,9 +5,11 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -47,11 +49,15 @@ public class JwtService{
 	}
 	
 	public boolean validateToken(String token,UserDetails userDetails) {
-		String email=extractEmail(token);
-		if(email.equals(userDetails.getUsername())&&!isTokenExpired(token)) {
-			return true;
-		}
-		return false;
+		
+			String email=extractEmail(token);
+			if(email.equals(userDetails.getUsername())&&!isTokenExpired(token)) {
+				return true;
+			}
+			return false;
+		
+		
+		
 		
 	}
 	

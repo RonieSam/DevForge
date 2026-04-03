@@ -16,6 +16,7 @@ public enum Permissions {
 	
 	REQUEST_APPROVE,
 	REQUEST_DELETE,
+	REQUEST_VIEW,
 	
 	TASK_CREATE,
 	TASK_UPDATE,

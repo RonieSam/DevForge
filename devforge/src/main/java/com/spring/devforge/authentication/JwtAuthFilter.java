@@ -3,6 +3,7 @@ package com.spring.devforge.authentication;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,13 +33,21 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-			;
+			
 			String email=null;
 			String token=null;
 			String header=request.getHeader("Authorization");
 			if(header!=null && header.startsWith("Bearer ")) {
 				token=header.substring(7);
-				email=jwtService.extractEmail(token);
+				try{
+					email=jwtService.extractEmail(token);
+				}
+				catch(Exception e) {
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		            response.setContentType("application/json");
+		            response.getWriter().write("{\"success\":false,\"message\":\"Invalid or expired token\",\"data\":null}");
+		            return;
+				}
 			}
 			
 			if(email!=null && SecurityContextHolder.getContext().getAuthentication()==null) {

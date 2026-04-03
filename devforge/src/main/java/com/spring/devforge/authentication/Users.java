@@ -19,9 +19,8 @@ public class Users {
 	private Long id;
 	@NotBlank(message="Username cannot be blank") @Size(min=3,max=15,message="Username must be within 3 to 15 characters")
 	private String username;
-	@Email(message="Email is not a valid") 
+	@Email(message="Email is not a valid")  @NotBlank
 	private String email;
-	@Size(min=8,message="Passwors should have atleast 8 characters") 
 	private String password;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
