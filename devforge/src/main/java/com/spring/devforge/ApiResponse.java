@@ -1,11 +1,11 @@
 package com.spring.devforge;
 
 public class ApiResponse {
-	String msg;
+	String message;
 	Object data;
 	boolean success;
-	public String getMsg() {
-		return msg;
+	public String getMessage() {
+		return message;
 	}
 	public Object getData() {
 		return data;
@@ -16,7 +16,7 @@ public class ApiResponse {
 	}
 	public ApiResponse(boolean success,String msg, Object data) {
 		super();
-		this.msg = msg;
+		this.message = msg;
 		this.data = data;
 		this.success=success;
 	}

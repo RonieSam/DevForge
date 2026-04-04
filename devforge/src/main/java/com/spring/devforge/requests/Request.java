@@ -3,7 +3,6 @@ package com.spring.devforge.requests;
 import java.time.LocalDateTime;
 
 import com.spring.devforge.authentication.Users;
-import com.spring.devforge.membership.Role;
 import com.spring.devforge.orgainzation.Organization;
 
 import jakarta.persistence.Entity;
@@ -25,27 +24,22 @@ public class Request {
 	private Users user;
 	@ManyToOne(fetch=FetchType.LAZY) 
 	private Organization org;
-	@Enumerated(EnumType.STRING)
-	private Role requestedRole;
+	
 	@Enumerated(EnumType.STRING)
 	private RequestStatus status;
 	private LocalDateTime createdAt;
 	@ManyToOne(fetch=FetchType.LAZY)
 	Users reviewedBy;
 	LocalDateTime reviewdAt;
-	public Request( Users user, Organization org,  Role requestedRole) {
+	public Request( Users user, Organization org) {
 		super();
 		this.user = user;
 		this.org = org;
-		this.requestedRole = requestedRole;
 		this.reviewedBy=null;
 		this.reviewdAt=null;
 	}
 
-	public Role getRequestedRole() {
-		return requestedRole;
-	}
-
+	
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -58,9 +52,6 @@ public class Request {
 		return reviewdAt;
 	}
 	
-	public void setRole(Role requestedRole) {
-		this.requestedRole=requestedRole;
-	}
 	
 	public void setStatus(RequestStatus status) {
 		this.status=status;

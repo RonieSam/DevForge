@@ -25,8 +25,8 @@ public class RequestController {
 	
 
 	@PostMapping("/org/{slug}/request")
-	public ResponseEntity<ApiResponse> createRequest(@PathVariable String slug,@RequestBody RequestCreationDto r ) throws AccessDeniedException{
-		RequestData data=service.handleRequestCreation(slug, r.getRole());
+	public ResponseEntity<ApiResponse> createRequest(@PathVariable String slug) throws AccessDeniedException{
+		RequestData data=service.handleRequestCreation(slug);
 		return new ResponseEntity<>(new ApiResponse(true,"Request has been sent",data),HttpStatus.CREATED);
 	}
 	

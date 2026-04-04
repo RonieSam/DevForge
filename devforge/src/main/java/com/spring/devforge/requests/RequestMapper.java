@@ -10,7 +10,6 @@ public class RequestMapper {
 				r.getUser().getUsername(),
 				r.getStatus(),
 				r.getReviewdAt(),
-				r.getRequestedRole(),
 				r.getReviewedBy()==null?"":r.getReviewedBy().getUsername(),
 				r.getReviewdAt()
 		);

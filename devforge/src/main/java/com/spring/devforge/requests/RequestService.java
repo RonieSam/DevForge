@@ -47,27 +47,23 @@ public class RequestService {
 	@Autowired
 	PermissionService permService;
 
-	public RequestData handleRequestCreation(String slug,Role role) throws AccessDeniedException {
-		if(role==null)role=Role.USER;
+	public RequestData handleRequestCreation(String slug) throws AccessDeniedException {
 		Users user=authService.getUser();
 		Organization org=orgRepo.findBySlug(slug);
 		if(org==null)throw new EntityNotFoundException("The Organization is invalid");
 		if(memRepo.existsByUserIdAndOrgId(user.getId(), org.getId()))throw new AccessDeniedException("Already part of this organization");
-		if(role==Role.OWNER)throw new IllegalArgumentException("Owner roles can not be requested");
 		Request req=repo.findByUserIdAndOrgId(user.getId(), org.getId());
 		if(req!=null) {
-			req.setRole(role);
 			req.setStatus(RequestStatus.PENDING);
 		}
 		else {
-			req=new Request(user,org,role);
+			req=new Request(user,org);
 		}
 		repo.save(req);
 		return RequestMapper.toData(req);
 	}
 	public List<RequestData> handleGetAllRequests(String slug) throws  AccessDeniedException{
 		Organization org=orgRepo.findBySlug(slug);
-		if(org==null)throw new EntityNotFoundException("The Organization is invalid");
 		Membership membership=memService.getMembership(slug);
 		permService.checkPermissions(membership.getRole(),Permissions.REQUEST_VIEW);
 		List<Request> reqs=new ArrayList<>();
@@ -82,9 +78,8 @@ public class RequestService {
 		
 		Membership reqMembership=memService.getMembership(slug);
 		permService.checkPermissions(reqMembership.getRole(),Permissions.REQUEST_APPROVE);
-		permService.isDenied(reqMembership.getRole(), req.getRequestedRole());
 		if(status==RequestStatus.APPROVED) {
-			Membership newMembership=new Membership(req.getUser(),req.getOrg(),req.getRequestedRole());
+			Membership newMembership=new Membership(req.getUser(),req.getOrg(),Role.USER);
 			memRepo.save(newMembership);
 		}	
 		req.setAtReview(reqMembership.getUser(), status);
