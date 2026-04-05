@@ -1,19 +1,21 @@
 'use client';
 
-import { AuthContext } from '@/context/AuthContext'
+import { AuthContext } from '@/context/AuthProvider'
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect } from 'react'
+import { ThreeDot } from 'react-loading-indicators';
 
-export default function() {
+export default function Dashboard() {
     const router=useRouter();
-    const {user} =useContext(AuthContext)
+    const {user,loading} =useContext(AuthContext)
 
     useEffect(()=>{
-      if(user==null)router.push("/");
-      console.log(user)
-    },[])
+      if(!user&&!loading)router.push("/");
+    },[user,loading])
   return (
-
-    <div>Welcome {user.firstName}</div>
+    <div>
+    {loading && <ThreeDot color={"blue"}/>}
+    {loading && <div>Welcome {user.firstName}</div>}
+    </div>
   )
 }

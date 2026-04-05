@@ -1,6 +1,6 @@
 'use client';
 import { AuthError } from "@/components/Error";
-import { AuthContext } from "@/context/AuthContext";
+import { AuthContext } from "@/context/AuthProvider";
 import React, { useState,useContext } from "react";
 
 export default function Signup() {

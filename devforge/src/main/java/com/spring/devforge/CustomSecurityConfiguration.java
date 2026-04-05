@@ -43,6 +43,7 @@ public class CustomSecurityConfiguration {
 					config.setAllowedOrigins(List.of("http://localhost:3000"));
 					config.setAllowedMethods(List.of("*"));
 					config.setAllowedHeaders(List.of("*"));
+					config.setAllowCredentials(true);
 					return config;
 				}))
 				.build();

@@ -1,18 +1,19 @@
 'use client';
 import { AuthError } from "@/components/Error";
-import { AuthContext} from "@/context/AuthContext";
-import React, { useContext, useState } from "react";
+import { AuthContext} from "@/context/AuthProvider";
+import React, { useContext, useEffect, useState } from "react";
 
 export default function Login() {
     const [password,setPassword]=useState("")
     const [email,setEmail]=useState("")
     const [showPassword,setShowPassword]=useState(false);
 
-    const {loginUser,authError}=useContext(AuthContext)
+    const {loginUser,authError,setLoading}=useContext(AuthContext)
     const onSubmit=(e)=>{
         e.preventDefault()
         loginUser(email,password)
     }
+ 
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="h-100 w-100 border rounded">
