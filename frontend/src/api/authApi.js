@@ -37,8 +37,12 @@ export async function VerifySessionApi(){
     try{
         const res=await apiClient.get("/me")
         return res.data.data
+        
     }catch(e){
-        return null;
+        if(e.response?.status==401){
+            return null;
+        }
+        throw e
     }
 }
 

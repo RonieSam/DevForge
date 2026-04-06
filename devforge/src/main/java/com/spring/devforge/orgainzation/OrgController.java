@@ -1,6 +1,7 @@
 package com.spring.devforge.orgainzation;
 
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 
 import javax.naming.AuthenticationException;
 
@@ -8,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.devforge.ApiResponse;
@@ -40,9 +43,21 @@ public class OrgController {
 	}
 	
 	@DeleteMapping("/org/{slug}")
-	public ResponseEntity<ApiResponse> updateOrg(@PathVariable String slug) throws AuthenticationException, AccessDeniedException{
+	public ResponseEntity<ApiResponse> deleteOrg(@PathVariable String slug) throws AuthenticationException, AccessDeniedException{
 		orgService.handleDeleteOrg(slug);
 		return new ResponseEntity<>(new ApiResponse(true,"Organization has been successfully deleted",null),HttpStatus.OK);
+	}
+	
+	@GetMapping("/org")
+	public ResponseEntity<ApiResponse> getAllOrg(){
+		List<OrgData> data=orgService.handleGetAllOrg();
+		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
 
 	}
-}
+	
+	@GetMapping("/org/search")
+	public ResponseEntity<ApiResponse> getOrgPrefix(@RequestParam String pre){
+		List<OrgData> data=orgService.handleGetOrgPrefix(pre);
+		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
+	}
+}	

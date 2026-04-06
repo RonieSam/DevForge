@@ -8,7 +8,7 @@ export default function Login() {
     const [email,setEmail]=useState("")
     const [showPassword,setShowPassword]=useState(false);
 
-    const {loginUser,authError,setLoading}=useContext(AuthContext)
+    const {loginUser,loginAuthError}=useContext(AuthContext)
     const onSubmit=(e)=>{
         e.preventDefault()
         loginUser(email,password)
@@ -17,8 +17,8 @@ export default function Login() {
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="h-100 w-100 border rounded">
-        {authError==null&&<div className="h-13 m-2"></div>}
-        {authError!=null&&<AuthError/>}
+        {loginAuthError==null&&<div className="h-13 m-2"></div>}
+        {loginAuthError!=null&&<AuthError/>}
 
         <h2 className="p-2">Login</h2>
         <form className="flex justify-center items-center flex-col" onSubmit={onSubmit}>

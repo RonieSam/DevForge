@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import AuthProvider from "@/context/AuthProvider";
 import MainComponent from "@/components/MainComponent";
+import OrgProvider from "@/context/OrgContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,10 +27,12 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col overflow-hidden">
         <AuthProvider>
           <Navbar />
+          <OrgProvider>
           <MainComponent children={children}/>
+          </OrgProvider>
         </AuthProvider>
       </body>
     </html>

@@ -52,7 +52,7 @@ public class AuthController {
 	
 	@PostMapping("/auth/logout")
 	public ResponseEntity<ApiResponse> logout(){
-	    SecurityContextHolder.clearContext(); 
+	    SecurityContextHolder.clearContext(); 	
 		return new ResponseEntity<>(new ApiResponse(true,"Logged out",null),service.getCookieHeader("", 0),HttpStatus.OK);
 	}
 	

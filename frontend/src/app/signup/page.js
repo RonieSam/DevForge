@@ -10,7 +10,7 @@ export default function Signup() {
     const [password,setPassword]=useState("")
     const [email,setEmail]=useState("")
     const [showPassword,setShowPassword]=useState(false);
-    const {signupUser,authError}=useContext(AuthContext)
+    const {signupUser,signAuthError}=useContext(AuthContext)
 
     const onSubmit=(e)=>{
         e.preventDefault()
@@ -19,8 +19,8 @@ export default function Signup() {
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="h-130 w-100 border rounded">
-        {authError==null&&<div className="h-13 m-2"></div>}
-        {authError!=null&&<AuthError/>}
+        {signAuthError==null&&<div className="h-13 m-2"></div>}
+        {signAuthError!=null&&<AuthError/>}
         <h2 className="p-2">Sign Up</h2>
         <form className="flex justify-center items-center flex-col" onSubmit={onSubmit}>
           <div>

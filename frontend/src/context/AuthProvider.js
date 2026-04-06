@@ -6,17 +6,26 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 export const AuthContext=createContext();
 export default function AuthProvider({children}) {
     const [user,setUser]=useState(null);
-    const [authError,setAuthError]=useState(null);
+    const [loginAuthError,setLoginAuthError]=useState(null);
+    const [signAuthError,setSignAuthError]=useState(null);
     const [loading,setLoading]=useState(true);
 
     const router=useRouter()
 
     useEffect(()=>{
       const fetchUser=async ()=>{
-        const data=await VerifySessionApi();
-        if(data!=null)router.push("/dashboard")
-        setUser(data)
-        setLoading(false);
+        try{
+          const data=await VerifySessionApi();
+          setUser(data)
+          setLoading(false);
+        }
+        catch(e){
+          setUser(null)
+          throw e
+        }
+        finally{
+          setLoading(false)
+        }
       }
       fetchUser()
     },[])
@@ -36,14 +45,18 @@ export default function AuthProvider({children}) {
       try{
         setLoading(true);
         const data=await LoginApi(email,password);
-        setAuthError(null)
+        setLoginAuthError(null)
         const userData=data.data;
         setUser(userData)
         router.push("/dashboard")
         setLoading(false)
       }
       catch(e){
-        setAuthError("Invalid Email or Password")
+        setLoginAuthError("Invalid Email or Password")
+        console.log("hi")
+        router.push("/login")
+        router.push("/login")
+        setLoading(false) 
       }
     }
     async function signupUser(firstName,lastName,username,email,password){
@@ -51,21 +64,23 @@ export default function AuthProvider({children}) {
       try{
         setLoading(true);
         const data=await SignupApi(firstName,lastName,username,email,password);
-        setAuthError(null)
+        setSignAuthError(null)
         const userData=data.data;
         setUser(userData)
         router.push("/dashboard")
         setLoading(false)
       }
       catch(e){
-        setAuthError(e.response?.data?.message)
+        setSignAuthError(e.response?.data?.message)
+        router.push("/signup")
+        setLoading(false)
       }
     }
     
 
     
     return (
-    <AuthContext.Provider value={{user,loginUser,signupUser,authError,loading,setLoading,logoutUser}}>
+    <AuthContext.Provider value={{user,loginUser,signupUser,signAuthError,loginAuthError,loading,setLoading,logoutUser}}>
         {children}
     </AuthContext.Provider>
   )

@@ -1,13 +1,14 @@
 package com.spring.devforge.orgainzation;
 
 import java.nio.file.AccessDeniedException;
-
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.spring.devforge.authentication.AuthService;
 import com.spring.devforge.authentication.UserDataJpa;
 import com.spring.devforge.authentication.Users;
 import com.spring.devforge.membership.Membership;
@@ -37,13 +38,20 @@ public class OrgService {
 	@Autowired
 	PermissionService permService;
 	
+	@Autowired
+	AuthService authService;
+	
+	public List<OrgData> handleGetAllOrg(){
+		Users user=authService.getUser();
+		List<Organization> orgs=membershipRepo.findAllByUserId(user.getId());
 		
+		return orgs.stream().map(OrgMapper::toData).toList();
+	}
 	
 	public OrgData handleOrgCreation(Organization org)throws EntityNotFoundException{
 		
-		Authentication auth=SecurityContextHolder.getContext().getAuthentication();	
-		String email=auth.getName();
-		Users owner=userRepo.findByEmail(email);	
+		
+		Users owner=authService.getUser();	
 		if(owner==null)throw new EntityNotFoundException("This account is invalid");
 		org.setOwner(owner);
 		String baseSlug=org.getName()
@@ -94,6 +102,11 @@ public class OrgService {
 		Organization org=repo.findBySlug(slug);
 		membershipRepo.deleteAllByOrgId(org.getId());
 		repo.deleteById(org.getId());
+	}
+	
+	public List<OrgData> handleGetOrgPrefix(String prefix) {
+		List<Organization> orgs=repo.findAllBySlugStartingWith(prefix);
+		return orgs.stream().map(OrgMapper::toData).toList();
 	}
 	
 	

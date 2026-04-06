@@ -64,6 +64,7 @@ public class AuthService {
 				.httpOnly(true)
 				.maxAge(age)
 				.path("/")
+				.secure(false)
 				.sameSite("Strict")
 				.build();
 		HttpHeaders headers=new HttpHeaders();
