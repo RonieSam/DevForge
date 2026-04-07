@@ -1,5 +1,5 @@
 'use client';
-import { getAllUserOrgApi, getOrgPrefix } from "@/api/orgApi";
+import { getAllUserOrgApi, getOrgPrefix, isMember, sendRequestApi } from "@/api/orgApi";
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthProvider";
 
@@ -31,11 +31,27 @@ export default function OrgProvider({children}){
         }
     }
 
+    async function checkIfMember(slug){
+        try{
+            const res=await isMember(slug)
+            return res;
+        }
+        catch(e){
+            throw e;
+        }
+    }
+
     function selectOrg(org){
         setOrg(org)
     }
+
+    async function sendRequest(slug,msg){
+        const res=await sendRequestApi(slug,msg)
+        return res;
+        
+    } 
     return(
-        <OrgContext.Provider value={{org,allUserOrgs,selectOrg,getOrgsQuery,allOrgs}}>
+        <OrgContext.Provider value={{org,allUserOrgs,selectOrg,getOrgsQuery,allOrgs,checkIfMember,sendRequest}}>
             {children}
         </OrgContext.Provider>
     )

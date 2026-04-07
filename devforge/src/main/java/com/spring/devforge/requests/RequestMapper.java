@@ -11,7 +11,8 @@ public class RequestMapper {
 				r.getStatus(),
 				r.getReviewdAt(),
 				r.getReviewedBy()==null?"":r.getReviewedBy().getUsername(),
-				r.getReviewdAt()
+				r.getReviewdAt(),
+				r.getMsg()
 		);
 	}
 }

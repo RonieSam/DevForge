@@ -52,5 +52,10 @@ public class MembershipController {
 		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
 	}
 	
-	
+	@GetMapping("/org/{slug}/me")
+	public ResponseEntity<ApiResponse> isMember(@PathVariable String slug) throws AuthenticationException{
+		MembershipData data=service.isMember(slug);
+		if(data==null)return new ResponseEntity<>(new ApiResponse(false,"",data),HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
+	}
 }

@@ -47,7 +47,8 @@ public class RequestService {
 	@Autowired
 	PermissionService permService;
 
-	public RequestData handleRequestCreation(String slug) throws AccessDeniedException {
+	public RequestData handleRequestCreation(String slug,String msg) throws AccessDeniedException {
+		System.out.println(slug);
 		Users user=authService.getUser();
 		Organization org=orgRepo.findBySlug(slug);
 		if(org==null)throw new EntityNotFoundException("The Organization is invalid");
@@ -57,7 +58,7 @@ public class RequestService {
 			req.setStatus(RequestStatus.PENDING);
 		}
 		else {
-			req=new Request(user,org);
+			req=new Request(user,org,msg);
 		}
 		repo.save(req);
 		return RequestMapper.toData(req);

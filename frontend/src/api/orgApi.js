@@ -20,3 +20,26 @@ export async function getOrgPrefix(pre){
         throw e
     }
 }
+
+export async function isMember(slug){
+    try{
+        const res=await apiClient.get(`/org/${slug}/me`)
+        return res.data.success
+    }
+    catch(e){
+        throw e
+    }
+}
+
+export async function sendRequestApi(slug,msg){
+    try{
+        const res=await apiClient.post("/request",{
+            slug:slug,
+            msg:msg
+        })
+        return res;
+    }
+    catch(e){
+        throw e;
+    }
+}

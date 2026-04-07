@@ -24,21 +24,26 @@ public class Request {
 	private Users user;
 	@ManyToOne(fetch=FetchType.LAZY) 
 	private Organization org;
-	
+	String msg;
 	@Enumerated(EnumType.STRING)
 	private RequestStatus status;
 	private LocalDateTime createdAt;
 	@ManyToOne(fetch=FetchType.LAZY)
 	Users reviewedBy;
 	LocalDateTime reviewdAt;
-	public Request( Users user, Organization org) {
+	public Request( Users user, Organization org,String msg) {
 		super();
 		this.user = user;
 		this.org = org;
 		this.reviewedBy=null;
 		this.reviewdAt=null;
+		this.msg=msg;
 	}
 
+		
+	public String getMsg() {
+		return msg;
+	}
 	
 	public LocalDateTime getCreatedAt() {
 		return createdAt;

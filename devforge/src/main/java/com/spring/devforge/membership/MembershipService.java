@@ -59,6 +59,22 @@ public class MembershipService {
 	    return membership;
 	}
 	
+	public MembershipData isMember(String slug) {
+		 Users user=authService.getUser();
+		    System.out.println(user.getUsername());
+
+		    Organization org = orgRepo.findBySlug(slug);
+		    if (user == null || org == null) {
+		        throw new EntityNotFoundException("User or organization does not exist");
+		    }
+		    Membership membership = repo.findByUserIdAndOrgId(user.getId(), org.getId());
+
+		    if (membership == null) {
+		        return null;
+		    }
+		    return MemberMapper.toData(membership);
+	}
+	
 	public void handleOwnerCreation(Organization org,Users owner) {
 		repo.save(new Membership(owner,org,Role.OWNER));
 	}

@@ -10,8 +10,12 @@ public class RequestData {
 	LocalDateTime requestedAt;
 	String reviewedBy;
 	LocalDateTime reviewedAt;
+	String msg;
 	public String getUsername() {
 		return username;
+	}
+	public String getMsg() {
+		return msg;
 	}
 	public RequestStatus getStatus() {
 		return status;
@@ -30,7 +34,7 @@ public class RequestData {
 		return id;
 	}
 	public RequestData(long id,String username, RequestStatus status, LocalDateTime requestedAt, String reviewedBy,
-			LocalDateTime reviewAt) {
+			LocalDateTime reviewAt,String msg) {
 		super();
 		this.id=id;
 		this.username = username;
@@ -38,6 +42,7 @@ public class RequestData {
 		this.requestedAt = requestedAt;
 		this.reviewedBy = reviewedBy;
 		this.reviewedAt = reviewAt;
+		this.msg=msg;
 	}
 	
 	

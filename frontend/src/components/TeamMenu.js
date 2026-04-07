@@ -4,9 +4,9 @@ import { OrgContext } from '@/context/OrgContext'
 import Link from 'next/link';
 import React, { useContext, useEffect } from 'react'
 
-export default function TeamMenu({showTeams,setShowTeams}) {
-    const {allUserOrgs,selectOrg}=useContext(OrgContext)
- 
+export default function TeamMenu({showTeams,setShowTeams,sendRequest}) {
+  const {allUserOrgs,selectOrg}=useContext(OrgContext)
+  
   
   return (
     <div>
