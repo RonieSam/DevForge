@@ -11,6 +11,17 @@ export async function getAllUserOrgApi(){
     
 }
 
+export async function getProjects(org){
+    try{
+        console.log(org)
+        const res=await apiClient.get(`/org/${org}/projects`)
+        return res.data.data
+    }
+    catch(e){
+        throw e;
+    }
+}
+
 export async function getOrgPrefix(pre){
     try{
         const res=await apiClient.get(`/org/search?pre=${pre}`)

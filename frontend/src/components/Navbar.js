@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AuthContext } from "@/context/AuthProvider";
 import MenuDropdown from "./MenuDropdown";
 export default function Navbar() {
-  const { user } = useContext(AuthContext);
+  const { user} = useContext(AuthContext);
 
   return (
     <div className="flex justify-between items-center sticky top-0 z-50 border-b h-15">
