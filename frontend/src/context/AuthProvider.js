@@ -38,7 +38,7 @@ export default function AuthProvider({children}) {
         setLoading(false)
       }
       catch(e){
-        console.log(e)
+        throw (e)
       }
     }
     async function loginUser (email,password){
@@ -53,8 +53,6 @@ export default function AuthProvider({children}) {
       }
       catch(e){
         setLoginAuthError("Invalid Email or Password")
-        console.log("hi")
-        router.push("/login")
         router.push("/login")
         setLoading(false) 
       }

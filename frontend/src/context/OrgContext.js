@@ -19,7 +19,6 @@ export default function OrgProvider({children}){
         async function getAllProjects(){
             const projects=await getProjects(org.slug);
             setAllProjects(projects);
-            console.log(projects)
         }
         if(!user&&!loading) setAllUserOrgs([])
         else getUserOrgs()
@@ -30,7 +29,6 @@ export default function OrgProvider({children}){
     async function getOrgsQuery(pre){
         try{
             const res=await getOrgPrefix(pre)
-            console.log(res)
             setAllOrgs(res)
         }
         catch(e){

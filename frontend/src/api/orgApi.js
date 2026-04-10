@@ -13,7 +13,6 @@ export async function getAllUserOrgApi(){
 
 export async function getProjects(org){
     try{
-        console.log(org)
         const res=await apiClient.get(`/org/${org}/projects`)
         return res.data.data
     }
