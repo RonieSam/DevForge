@@ -6,6 +6,8 @@ export async function getAllUserOrgApi(){
         return res.data.data
     }
     catch(e){
+        console.log(e.message)
+
         throw e
     }
     
@@ -17,6 +19,7 @@ export async function getProjects(org){
         return res.data.data
     }
     catch(e){
+        console.log(e.message)
         throw e;
     }
 }
@@ -27,6 +30,8 @@ export async function getOrgPrefix(pre){
         return res.data.data
     }
     catch(e){
+        console.log(e.message)
+
         throw e
     }
 }
@@ -37,6 +42,8 @@ export async function isMember(slug){
         return res.data.success
     }
     catch(e){
+        console.log(e.message)
+
         throw e
     }
 }
@@ -50,6 +57,8 @@ export async function sendRequestApi(slug,msg){
         return res;
     }
     catch(e){
+        console.log(e.message)
+
         throw e;
     }
 }

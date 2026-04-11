@@ -12,7 +12,7 @@ export default function layout({children}) {
       if(!user&&!loading)router.push("/login");
     },[user,loading])
   return (
-  <div className='flex h-screen'>
+  <div className='flex h-screen overflow-hidden'>
     <Sidebar />
     <div className='flex-1 overflow-y-auto'>
       {children}

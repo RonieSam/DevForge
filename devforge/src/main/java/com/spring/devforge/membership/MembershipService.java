@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import com.spring.devforge.authentication.AuthService;
@@ -45,7 +46,7 @@ public class MembershipService {
 	public Membership getMembership(String slug) throws InsufficientAuthenticationException{
 	    Users user=authService.getUser();
 	    System.out.println(user.getUsername());
-
+		System.out.println(user.getEmail());
 	    Organization org = orgRepo.findBySlug(slug);
 	    if (user == null || org == null) {
 	        throw new EntityNotFoundException("User or organization does not exist");

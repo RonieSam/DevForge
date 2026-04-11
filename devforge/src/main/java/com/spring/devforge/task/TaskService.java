@@ -10,12 +10,15 @@ import javax.naming.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spring.devforge.authentication.AuthService;
 import com.spring.devforge.authentication.UserDataJpa;
 import com.spring.devforge.authentication.Users;
 import com.spring.devforge.membership.Membership;
 import com.spring.devforge.membership.MembershipDataJpa;
 import com.spring.devforge.membership.MembershipService;
 import com.spring.devforge.membership.Role;
+import com.spring.devforge.orgainzation.OrgDataJpa;
+import com.spring.devforge.orgainzation.Organization;
 import com.spring.devforge.permissions.PermissionService;
 import com.spring.devforge.permissions.Permissions;
 import com.spring.devforge.project.Project;
@@ -45,6 +48,11 @@ public class TaskService {
 	@Autowired
 	PermissionService permService;
 	
+	@Autowired
+	OrgDataJpa orgRepo;
+	
+	@Autowired
+	AuthService authService;
 
 	public TaskData handleTaskCreation(String desc,LocalDateTime deadline,long projectId,String assignedTo,Priority priority) throws AuthenticationException, AccessDeniedException {
 		Project proj=projRepo.findById(projectId).orElseThrow(()-> new EntityNotFoundException("Project does not exisit"));
@@ -95,6 +103,22 @@ public class TaskService {
 		List<Tasks> tasks=repo.findAllByProjectId(projId);
 		return tasks.stream().map(TaskMapper::toData).toList();
 		
+	}
+	
+	public List<TaskData> handleGetAllUserOrgTasks(Long orgId){
+		List<Tasks> tasks=new ArrayList<>();
+		if(orgId==null) {
+			Users user=authService.getUser();
+			tasks=repo.findAllByAssignedToId(user.getId());
+		}
+		else {
+			Organization org=orgRepo.findById(orgId).orElseThrow(()->new EntityNotFoundException());
+			Membership reqMembership=memService.getMembership(org.getSlug());
+
+			tasks=repo.findAllByOrgAndAssignedToId(reqMembership.getOrg().getId(), reqMembership.getUser().getId());
+		}
+		return tasks.stream().map(TaskMapper::toData).toList();
+
 	}
 	
 	

@@ -11,8 +11,9 @@ public class TaskData {
 	Priority priority;
 	LocalDateTime deadline;
 	LocalDateTime createdAt;
+	String orgName;
 	public TaskData(long id,String desc, String assignedTo, String assignedBy, TaskStatus status, Priority priority,
-			LocalDateTime deadline,LocalDateTime createdAt) {
+			LocalDateTime deadline,LocalDateTime createdAt,String orgName) {
 		super();
 		this.id=id;
 		this.desc = desc;
@@ -22,6 +23,7 @@ public class TaskData {
 		this.priority = priority;
 		this.deadline = deadline;
 		this.createdAt=createdAt;
+		this.orgName=orgName;
 	}
 	
 	public LocalDateTime getCreatedAt() {
@@ -49,6 +51,8 @@ public class TaskData {
 	public long getId() {
 		return id;
 	}
-	
+	public String getOrgName() {
+		return orgName;
+	}
 	
 }

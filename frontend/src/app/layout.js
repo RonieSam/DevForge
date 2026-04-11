@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import AuthProvider from "@/context/AuthProvider";
 import MainComponent from "@/components/MainComponent";
 import OrgProvider from "@/context/OrgContext";
+import TaskProvider from "@/context/TaskContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,9 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <Navbar />
           <OrgProvider>
+            <TaskProvider>
           <MainComponent children={children}/>
+            </TaskProvider>
           </OrgProvider>
         </AuthProvider>
       </body>

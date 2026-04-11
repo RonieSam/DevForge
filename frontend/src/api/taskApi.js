@@ -1,6 +1,23 @@
-// import { apiClient } from "./apiClient";
+import { apiClient } from "./apiClient";
 
 
-// async function getOrgTasks(){
-//     const res=apiClient.get("/")
-// }
+export async function getOrgUserTasks(org){
+    try{
+        const res=await apiClient.get(`/tasks/me`,{params:{orgId:org.id}})
+        return res.data.data
+    }
+    catch(e){
+        console.log(e.message)
+        throw e;
+    }
+}
+export async function getUserTasks(){
+    try{
+        const res=await apiClient.get(`/tasks/me`)
+        return res.data.data
+    }
+    catch(e){
+        console.log(e.message)
+        throw e;
+    }
+}

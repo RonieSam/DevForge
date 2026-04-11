@@ -42,7 +42,7 @@ export async function VerifySessionApi(){
         if(e.response?.status==401){
             return null;
         }
-        throw e
+        console.log(e.message)
     }
 }
 
@@ -51,6 +51,7 @@ export async function LogoutApi(){
         const res=await apiClient.post("/auth/logout")
         if(!res.data.success)console.log("Couldnt logout")
     }catch(e){
+        console.log(e.message)
         throw e;
     }
 }
