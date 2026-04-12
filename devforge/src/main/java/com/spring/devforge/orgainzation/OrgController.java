@@ -50,9 +50,8 @@ public class OrgController {
 	
 	@GetMapping("/org")
 	public ResponseEntity<ApiResponse> getAllOrg(){
-		List<OrgData> data=orgService.handleGetAllOrg();
+		List<UserOrgData> data=orgService.handleGetAllOrg();
 		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
-
 	}
 	
 	@GetMapping("/org/search")

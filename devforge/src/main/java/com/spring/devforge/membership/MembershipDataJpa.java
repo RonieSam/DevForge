@@ -18,7 +18,7 @@ public interface MembershipDataJpa extends JpaRepository<Membership,Long> {
 	@Query("SELECT m FROM Membership m JOIN FETCH m.user WHERE m.org.id=:orgId")
 	public List<Membership> findAllByOrgId(@Param("orgId")long orgId);
 	
-	@Query("SELECT m.org FROM Membership m where m.user.id=:userId")
-	public List<Organization> findAllByUserId(@Param("userId")long userId);
+	@Query("SELECT m FROM Membership m where m.user.id=:userId")
+	public List<Membership> findAllByUserId(@Param("userId")long userId);
 
 }

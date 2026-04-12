@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import React, { useContext, useState } from 'react';
-import { OrgContext } from '@/context/OrgContext';
+import React, { useContext, useState } from "react";
+import { OrgContext } from "@/context/OrgContext";
+import { TaskContext } from "@/context/TaskContext";
 
-export default function NewTaskForm({ onSubmitTask , setNewTask}) {
-  const { org, allUserOrgs, selectOrg } = useContext(OrgContext);
-
+export default function NewTaskForm({  setNewTask }) {
+  const { allProjects } = useContext(OrgContext);
+  const {handleCreateTask}=useContext(TaskContext)
   const [form, setForm] = useState({
     desc: "",
     deadline: "",
     assignedTo: "",
     priority: "MEDIUM",
-    status: "TODO",
-    organization:org
+    project: -1,
   });
 
   function handleChange(e) {
@@ -21,20 +21,21 @@ export default function NewTaskForm({ onSubmitTask , setNewTask}) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    onSubmitTask(form);
+    console.log(form)
+    handleCreateTask(form)
   }
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-md relative">
-      <button className="absolute top-3 right-3 text-gray-500 hover:text-black" onClick={()=>setNewTask(false)}>
-    ✕
-  </button>
-      <h2 className="text-lg font-semibold mb-4 text-gray-800">
-        Create Task
-      </h2>
+      <button
+        className="absolute top-3 right-3 text-gray-500 hover:text-black"
+        onClick={() => setNewTask(false)}
+      >
+        ✕
+      </button>
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">Create Task</h2>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
         {/* Description */}
         <input
           name="desc"
@@ -57,7 +58,7 @@ export default function NewTaskForm({ onSubmitTask , setNewTask}) {
         {/* Assigned To */}
         <input
           name="assignedTo"
-          placeholder="Assign to (email/username)"
+          placeholder="Assign to (username)"
           value={form.assignedTo}
           onChange={handleChange}
           className="border p-2 rounded-lg"
@@ -75,37 +76,39 @@ export default function NewTaskForm({ onSubmitTask , setNewTask}) {
           <option value="HIGH">High</option>
         </select>
 
-        {/* Status */}
-        <select
-          name="status"
-          value={form.status}
-          onChange={handleChange}
-          className="border p-2 rounded-lg"
-        >
-          <option value="TODO">Todo</option>
-          <option value="INPROGRESS">In Progress</option>
-          <option value="UNDERREVIEW">Under Review</option>
-          <option value="COMPLETED">Completed</option>
-        </select>
+        
 
         {/* Org Selector (from Team Menu idea) */}
         <div>
-          <label className="text-sm text-gray-600 ">Organization</label>
+          <label className="text-sm text-gray-600 ">Project</label>
 
-          <select
-            value={form.org}
-            onChange={(e) => {
-              handleChange
-            }}
-            className="border p-2 rounded-lg w-full"
-          >
-            <option value="">Select Organization</option>
-            {allUserOrgs.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.name}
-              </option>
-            ))}
-          </select>
+          {allProjects && allProjects.length > 0 && 
+            <select
+              name="project"
+              value={form.project}
+              onChange={handleChange}
+              className="border p-2 rounded-lg w-full"
+>
+              <option value="">Select Project</option>
+              {allProjects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          }
+          {allProjects&&allProjects.length<=0&&
+            <select
+              value={form.project}
+              onChange={(e) => {
+                handleChange;
+              }}
+              className="border p-2 rounded-lg w-full"
+            >
+              <option>No Project available</option>
+              
+            </select>
+          }
         </div>
 
         {/* Submit */}
@@ -115,7 +118,6 @@ export default function NewTaskForm({ onSubmitTask , setNewTask}) {
         >
           Create Task
         </button>
-
       </form>
     </div>
   );

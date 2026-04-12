@@ -21,3 +21,14 @@ export async function getUserTasks(){
         throw e;
     }
 }
+
+export async function createTask(task){
+    try{
+        
+        await apiClient.post(`projects/${task.project}/tasks`,task)
+    }
+    catch(e){
+        console.log(e);
+        throw(e);
+    }
+}

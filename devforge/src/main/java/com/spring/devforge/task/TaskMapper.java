@@ -7,7 +7,6 @@ package com.spring.devforge.task;
 public class TaskMapper {
 	
 	public static TaskData toData(Tasks task) {
-		System.out.println(task.getProject().getOrg().getName());
 		return new TaskData(
 				task.getId(),
 				task.getDescription(),task.getAssignedTo().getUsername(),

@@ -62,7 +62,8 @@ public class RolePermissions {
 				
 		);
 		case USER: return Set.of(
-				TASK_STATUS_UPDATE
+				TASK_STATUS_UPDATE,
+				TASK_CREATE
 		);
 		default:throw new IllegalArgumentException("Unknown role: " + role);
 		 }

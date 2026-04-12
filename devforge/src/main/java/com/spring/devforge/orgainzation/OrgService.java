@@ -41,11 +41,10 @@ public class OrgService {
 	@Autowired
 	AuthService authService;
 	
-	public List<OrgData> handleGetAllOrg(){
+	public List<UserOrgData> handleGetAllOrg(){
 		Users user=authService.getUser();
-		List<Organization> orgs=membershipRepo.findAllByUserId(user.getId());
-		
-		return orgs.stream().map(OrgMapper::toData).toList();
+		List<Membership> orgs=membershipRepo.findAllByUserId(user.getId());
+		return orgs.stream().map(UserOrgMapper::toData).toList();
 	}
 	
 	public OrgData handleOrgCreation(Organization org)throws EntityNotFoundException{

@@ -17,6 +17,12 @@ public class TaskRequest {
 		this.status=status;
 	}
 	
+	@Override
+	public String toString() {
+		return "TaskRequest [desc=" + desc + ", deadline=" + deadline + ", assignedTo=" + assignedTo + ", priority="
+				+ priority + ", status=" + status + "]";
+	}
+
 	public TaskStatus getStatus() {
 		return status;
 	}
