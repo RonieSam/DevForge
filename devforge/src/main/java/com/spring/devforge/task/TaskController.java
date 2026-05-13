@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,10 +44,16 @@ public class TaskController {
 		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
 	}
 	
-				@GetMapping("/tasks/me")
-				public ResponseEntity<ApiResponse> getAllOrgTask(@RequestParam(required=false) Long orgId) throws AuthenticationException, AccessDeniedException{
-					List<TaskData> data=service.handleGetAllUserOrgTasks(orgId);
-					return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
-				}
+	@GetMapping("/tasks/me")
+	public ResponseEntity<ApiResponse> getAllOrgTask(@RequestParam(required=false) Long orgId) throws AuthenticationException, AccessDeniedException{
+		List<TaskData> data=service.handleGetAllUserOrgTasks(orgId);
+		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/tasks/{id}")
+	public ResponseEntity<ApiResponse> deleteTask(@PathVariable long id) throws AuthenticationException, AccessDeniedException{
+		service.handleDeleteTask(id);
+		return new ResponseEntity<>(new ApiResponse(true,"",null),HttpStatus.OK);
+	}
 	
 }

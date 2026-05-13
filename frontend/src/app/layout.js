@@ -6,6 +6,7 @@ import AuthProvider from "@/context/AuthProvider";
 import MainComponent from "@/components/MainComponent";
 import OrgProvider from "@/context/OrgContext";
 import TaskProvider from "@/context/TaskContext";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           <OrgProvider>
             <TaskProvider>
+          <Toaster position="top-right"/>
           <MainComponent children={children}/>
             </TaskProvider>
           </OrgProvider>

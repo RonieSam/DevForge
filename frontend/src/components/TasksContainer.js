@@ -7,11 +7,13 @@ import NoTasks from "./NoTasks";
 import { OrgContext } from "@/context/OrgContext";
 import TaskProgress from "./TaskProgress";
 import NewTaskForm from "./NewTaskForm";
+import EditTask from "./EditTask";
 
 export default function TasksContainer() {
   const { userTask, userOrgTask ,selectedTasks,progress,setSelectedTasks } = useContext(TaskContext);
   const { org } = useContext(OrgContext);
   const [newTask,setNewTask]=useState(false)
+  const [editTask,setEditTask]=useState(null)
 
 
   const tasks = selectedTasks === "my" ? userTask : userOrgTask;
@@ -47,28 +49,30 @@ export default function TasksContainer() {
         Create Task
       </button></div>
     <div className="flex justify-center">
-      {newTask&&<NewTaskForm setNewTask={setNewTask}/>}
+      {newTask&&!editTask&&<NewTaskForm setNewTask={setNewTask}/>}
       {/* Content */}
-      {!newTask&&<div className="mt-4">
+
+      {editTask&&!newTask&&<EditTask setEditTask={setEditTask} task={editTask}/>}
+      {!newTask&&!editTask&&<div className="mt-4">
         {/* No org selected */}
         {selectedTasks === "org" && !org && <NoOrgSelected />}
 
         {/* No tasks */}
         {selectedTasks === "my" && (!userTask || userTask.length === 0) && (
-          <NoTasks message="No tasks assigned to you" />
+          <NoTasks message="No tasks assigned to you" setNewTask={setNewTask}/>
         )}
 
         {selectedTasks === "org" &&
           org &&
           (!userOrgTask || userOrgTask.length === 0) && (
-            <NoTasks message="No tasks in this organization" />
+            <NoTasks message="No tasks in this organization" setNewTask={setNewTask}/>
           )}
 
         {/* Task list */}
         <div className="flex flex-wrap gap-4">
           {tasks &&
             tasks.length > 0 &&
-            tasks.map((task) => <TaskCard key={task.id} task={task} />)}
+            tasks.map((task) => <TaskCard key={task.id} task={task} setEditTask={setEditTask}/>)}
         </div>
       </div>}
       </div>

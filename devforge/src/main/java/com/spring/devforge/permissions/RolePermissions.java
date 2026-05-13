@@ -27,7 +27,6 @@ public class RolePermissions {
 				TASK_UPDATE,
 				TASK_DELETE,
 				TASK_STATUS_UPDATE,
-				TASK_REASSIGN,
 				
 				COMMENT_CREATE,
 				COMMENT_DELETE
@@ -53,7 +52,6 @@ public class RolePermissions {
 				TASK_UPDATE,
 				TASK_DELETE,
 				TASK_STATUS_UPDATE,
-				TASK_REASSIGN,
 				
 				COMMENT_CREATE,
 				COMMENT_DELETE

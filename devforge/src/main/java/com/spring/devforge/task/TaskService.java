@@ -66,8 +66,8 @@ public class TaskService {
 		return TaskMapper.toData(newTask);
 	}
 	
+	
 	public TaskData handleTaskUpdation(String desc,LocalDateTime deadline,String assignedTo,Priority priority,long taskId,TaskStatus status) throws AuthenticationException, AccessDeniedException {
-		
 		Tasks task=repo.findById(taskId).orElseThrow(()->new EntityNotFoundException("Task not found"));
 		Project proj=task.getProject();
 		Membership reqMembership=memService.getMembership(proj.getOrg().getSlug());
@@ -81,13 +81,18 @@ public class TaskService {
 		task.setDescription(desc);
 		task.setDeadline(deadline);
 		task.setPriority(priority);
-		if((status==TaskStatus.UNDERREVIEW&&reqMembership.getUser().getId().equals(task.getAssignedTo().getId()))||reqMembership.getUser().getId().equals(task.getCreatedBy().getId()))
+		if(status==TaskStatus.COMPLETED){
+			permService.checkPermissions(reqMembership.getRole(), Permissions.TASK_STATUS_UPDATE);
 			task.setStatus(status);
+		}
+		else {
+			task.setStatus(status);
+		}
 		repo.save(task);
 		return TaskMapper.toData(task);
 	}
 	
-	public void deleteTask(long id) throws AuthenticationException, AccessDeniedException {
+	public void handleDeleteTask(long id) throws AuthenticationException, AccessDeniedException {
 		Tasks task=repo.findById(id).orElseThrow(()->new EntityNotFoundException("Task not found"));
 		Project proj=task.getProject();
 		if(proj==null)throw new EntityNotFoundException("Project does not exisit");

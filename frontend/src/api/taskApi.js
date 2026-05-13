@@ -32,3 +32,24 @@ export async function createTask(task){
         throw(e);
     }
 }
+
+export async function updateTask(task){
+    try{
+
+        await apiClient.put(`tasks/${task.id}`,task)
+    }
+    catch(e){
+        console.log(e);
+        throw(e);
+    }
+}
+export async function deleteTask(id){
+    try{
+        await apiClient.delete(`tasks/${id}`,null)
+    }
+    catch(e){
+        console.log(e);
+        throw(e);
+    }
+}
+

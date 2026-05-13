@@ -1,10 +1,10 @@
 'use client';
 
-import { createTask, getOrgUserTasks, getUserTasks } from "@/api/taskApi";
+import { createTask, deleteTask, getOrgUserTasks, getUserTasks, updateTask } from "@/api/taskApi";
 import { createContext, useContext, useEffect, useState } from "react";
 import { OrgContext } from "./OrgContext";
 import { AuthContext } from "./AuthProvider";
-import { Edu_AU_VIC_WA_NT_Arrows } from "next/font/google";
+
 
 export const TaskContext=createContext();
 export default function TaskProvider({children}){
@@ -26,8 +26,7 @@ export default function TaskProvider({children}){
         }
         if(user!=null&&org!=null)getAllOrgUserTasks();
     
-        // console.log(userTask)
-        // console.log(userOrgTask)
+      
     },[org,user])
 
     useEffect(()=>{
@@ -45,12 +44,23 @@ export default function TaskProvider({children}){
     }
 
     async function handleCreateTask(task){
-        console.log(task)
         await createTask(task);
         if(task.assignedTo==user.username){
             getAllOrgUserTasks();
             getAllUserTasks();
         }
+    }
+
+    async function handleUpdateTask(task){
+        await updateTask(task);
+        getAllOrgUserTasks();
+        getAllUserTasks();
+    }
+
+    async function handleDeleteTask(id){
+        await deleteTask(id)
+        getAllOrgUserTasks();
+        getAllUserTasks();
     }
     function getProgress(){
         const tasks=selectedTasks=="my"?userTask:userOrgTask
@@ -70,7 +80,7 @@ export default function TaskProvider({children}){
 
     }
     return(
-        <TaskContext.Provider value={{userTask,userOrgTask,progress,setSelectedTasks,selectedTasks,handleCreateTask}}>
+        <TaskContext.Provider value={{userTask,userOrgTask,progress,setSelectedTasks,selectedTasks,handleCreateTask,handleUpdateTask,handleDeleteTask}}>
             {children}
         </TaskContext.Provider>
     )

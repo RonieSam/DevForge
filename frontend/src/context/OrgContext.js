@@ -11,6 +11,7 @@ export default function OrgProvider({children}){
     const [allOrgs,setAllOrgs]=useState([])
     const [allProjects,setAllProjects]=useState([])
     const {user,loading} =useContext(AuthContext)
+    
     useEffect(()=>{
         async function getUserOrgs(){
             const orgs=await getAllUserOrgApi();
@@ -35,8 +36,6 @@ export default function OrgProvider({children}){
             throw e;
         }
     }
-
-   
 
     async function checkIfMember(slug){
         try{

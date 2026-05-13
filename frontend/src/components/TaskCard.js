@@ -1,7 +1,9 @@
-import React from 'react'
+import { OrgContext } from '@/context/OrgContext';
+import React, { useContext } from 'react'
+import toast from 'react-hot-toast';
 
-export default function TaskCard({task}) {
-
+export default function TaskCard({task,setEditTask}) {
+    const {org} = useContext(OrgContext)
     function getDate(dateTime){
         return new Date(dateTime).toLocaleDateString();
     }
@@ -9,7 +11,15 @@ export default function TaskCard({task}) {
         return new Date(dateTime).toLocaleTimeString("en-us",{hour:"2-digit",minute:"2-digit",});
     }
   return (
-    <div className="bg-white rounded-xl shadow-sm p-4 w-64 flex flex-col gap-3 hover:shadow-md transition">
+    <div className="bg-white rounded-xl shadow-sm p-4 w-64 flex flex-col gap-3 hover:shadow-md transition" 
+    onClick={()=>{
+      if(org&&org.name===task.orgName){
+        setEditTask(task)
+      }
+      else{
+          toast.error("Select the appropriate Team")
+      }
+      }}>
   
   {/* Title */}
   <div className="font-semibold text-gray-800 line-clamp-2">
