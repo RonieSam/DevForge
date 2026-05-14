@@ -3,13 +3,14 @@ package com.spring.devforge.comment;
 import java.time.LocalDateTime;
 
 import com.spring.devforge.authentication.Users;
-import com.spring.devforge.task.Tasks;
+import com.spring.devforge.project.Project;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,7 +27,7 @@ public class Comments {
 		private Long id;
 		
 		@ManyToOne(fetch=FetchType.LAZY) @NotNull
-		private Tasks task;
+		private Project proj;
 		@ManyToOne(fetch=FetchType.LAZY) @NotNull
 		private Users user;
 		@NotBlank @Size(max=500,message="Comment cannot exceed 500 characters")
@@ -35,36 +36,31 @@ public class Comments {
 		public Long getId() {
 			return id;
 		}
-		public void setId(Long id) {
-			this.id = id;
+		
+		
+		public Project getProj() {
+			return proj;
 		}
-		public Tasks getTask() {
-			return task;
-		}
-		public void setTask(Tasks task) {
-			this.task = task;
-		}
+		
 		public Users getUser() {
 			return user;
 		}
-		public void setUser(Users user) {
-			this.user = user;
-		}
+		
 		public String getContent() {
 			return content;
 		}
-		public void setContent(String content) {
-			this.content = content;
-		}
+	
 		public LocalDateTime getCreatedAt() {
 			return createdAt;
 		}
-		public void setCreatedAt(LocalDateTime createdAt) {
-			this.createdAt = createdAt;
+		
+		@PrePersist
+		public void atCreation() {
+			this.createdAt = LocalDateTime.now();
 		}
-		public Comments(@NotNull Tasks task, @NotNull Users user, @NotBlank String content) {
+		public Comments(@NotNull Project proj, @NotNull Users user, @NotBlank String content) {
 			super();
-			this.task = task;
+			this.proj = proj;
 			this.user = user;
 			this.content = content;
 		}

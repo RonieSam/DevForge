@@ -1,26 +1,27 @@
 'use client';
 import { AuthError } from "@/components/Error";
 import { AuthContext } from "@/context/AuthProvider";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const { loginUser, loginAuthError } = useContext(AuthContext);
+  const { loginUser} = useContext(AuthContext);
 
   const onSubmit = (e) => {
     e.preventDefault();
     loginUser(email, password);
   };
 
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       
       <div className="w-[380px] bg-white rounded-xl shadow-md p-6">
         
-        {loginAuthError && <AuthError />}
 
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">
           Welcome back

@@ -23,21 +23,16 @@ public class CommentController {
 	
 	@Autowired
 	CommentService service;
-	@PostMapping("/tasks/{id}/comments")
+	@PostMapping("/projects/{id}/comments")
 	public ResponseEntity<ApiResponse> createComment(@PathVariable int id,@RequestBody CommentDto req) throws AuthenticationException, AccessDeniedException{
 		CommentData data=service.handleAddComment(id, req.content);
 		return new ResponseEntity<>(new ApiResponse(true,"Comment created",data),HttpStatus.CREATED);
 		
 	}
 	
-	@DeleteMapping("/tasks/{taskId}/comments/{id}")
-	public ResponseEntity<ApiResponse> deleteComment(@PathVariable long id,@PathVariable int taskId) throws AuthenticationException, AccessDeniedException{
-		service.handleDeleteComments(taskId,id);
-		return new ResponseEntity<>(new ApiResponse(true,"Comment deleted",null),HttpStatus.OK);
-		
-	}
 	
-	@GetMapping("/tasks/{taskId}")
+	
+	@GetMapping("/projects/{id}/comments")
 	public ResponseEntity<ApiResponse> getComments(@PathVariable int id) throws AuthenticationException{
 		List<CommentData> data=service.handleGetAllComments(id);
 		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);

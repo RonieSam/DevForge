@@ -3,6 +3,7 @@ package com.spring.devforge.task;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.devforge.authentication.Users;
 import com.spring.devforge.comment.Comments;
 import com.spring.devforge.project.Project;
@@ -28,6 +29,7 @@ public class Tasks {
 	String description;
 	LocalDateTime deadline;
 	@ManyToOne(fetch=FetchType.LAZY)
+	@JsonIgnore
 	Project project;
 	@ManyToOne(fetch=FetchType.LAZY)
 	Users assignedTo;
@@ -40,8 +42,7 @@ public class Tasks {
 	@Enumerated(EnumType.STRING)
 	TaskStatus status;
 	LocalDateTime updatedAt;
-	@OneToMany(mappedBy="task",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
-	List<Comments> comments;
+	
 	public Long getId() {
 		return id;
 	}

@@ -4,11 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.spring.devforge.authentication.Users;
+import com.spring.devforge.comment.Comments;
+import com.spring.devforge.logs.ProjectLogs;
 import com.spring.devforge.orgainzation.Organization;
 import com.spring.devforge.task.Tasks;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -38,37 +41,96 @@ public class Project {
 	@ManyToOne(fetch=FetchType.LAZY) @NotNull @JoinColumn(name="org_id")
 	private Organization org;
 	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
-	private LocalDateTime completedAt;
-	@Enumerated(EnumType.STRING)
-	private ProjectStatus status;
+	private String description;
+	@ElementCollection
+	private List<String> stack;
+	private String github;
+	@OneToMany(mappedBy="proj",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
+	List<Comments> comments;
+	@OneToMany(mappedBy="proj",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
+	List<ProjectLogs> logs;
+	public String getDescription() {
+		return description;
+	}
+
+
+
+	public List<Comments> getComments() {
+		return comments;
+	}
+
+
+
+	public List<ProjectLogs> getLogs() {
+		return logs;
+	}
+
 	@OneToMany(mappedBy="project",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
 	List<Tasks> tasks;
 	Project(){}
 	
-	public ProjectStatus getStatus() {
-		return status;
-	}
+	
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return "Project [id=" + id + ", name=" + name + ", createdBy=" + createdBy + ", org=" + org + ", createdAt="
-				+ createdAt + ", updatedAt=" + updatedAt + ", completedAt=" + completedAt + ", status=" + status + "]";
+	
+
+	public void setDesc(String desc) {
+		this.description = desc;
 	}
 
-	public Project(@NotBlank @Size(min = 5) String name, @NotNull Users createdBy,@NotNull Organization org) {
+
+
+	public void setStack(List<String> stack) {
+		this.stack = stack;
+	}
+
+
+
+	public void setGithub(String github) {
+		this.github = github;
+	}
+
+
+
+	public Project(@NotBlank @Size(min = 5) String name, @NotNull Users createdBy,@NotNull Organization org,@NotNull String desc,List<String> stack,String github) {
 		super();
 		this.name = name;
 		this.createdBy = createdBy;
 		this.org=org;
-		this.status=ProjectStatus.INPROGRESS;
-		this.completedAt=null;
-		this.updatedAt=null;
+		this.description=desc;
+		this.stack=stack;
+		this.github=github;
+		
 	}
+	
+	
+	public String getDesc() {
+		return description;
+	}
+
+
+
+	public List<String> getStack() {
+		return stack;
+	}
+
+
+
+	public String getGithub() {
+		return github;
+	}
+
+
+
+	public List<Tasks> getTasks() {
+		return tasks;
+	}
+
+
+
 	public Organization getOrg() {
 		return org;
 	}
@@ -84,24 +146,11 @@ public class Project {
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-	public LocalDateTime getCompletedAt() {
-		return completedAt;
-	}
-	
-	public void completeProject() {
-		this.completedAt=LocalDateTime.now();
-		this.status=ProjectStatus.COMPLETED;
-	}
-	
+
 	@PrePersist
 	public void atCreation() {
 		this.createdAt=LocalDateTime.now();
 	}
 	
-	public void newUpdate() {
-		this.updatedAt=LocalDateTime.now();
-	}
+	
 }

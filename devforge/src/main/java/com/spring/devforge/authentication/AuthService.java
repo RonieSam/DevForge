@@ -82,7 +82,6 @@ public class AuthService {
 
 			UserDetails userDetails=userDetailsService.loadUserByUsername(email);
 			if(jwtService.validateToken(token, userDetails)) {
-				System.out.println("inside");
 				Users user=repo.findByEmail(email);
 			    return AuthMapper.toData(user); 
 			}

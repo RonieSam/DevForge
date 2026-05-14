@@ -20,7 +20,6 @@ public class CommentData {
 		return createdAt;
 	}
 	
-	
 	public CommentData(long id, String content, String username,LocalDateTime createdAt) {
 		super();
 		this.id = id;

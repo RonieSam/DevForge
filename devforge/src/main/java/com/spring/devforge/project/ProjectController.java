@@ -29,14 +29,14 @@ public class ProjectController {
 	@PostMapping("/org/{slug}/projects")
 	public ResponseEntity<ApiResponse> createProject(@RequestBody ProjectCreationDTO dto,@PathVariable String slug) throws AccessDeniedException, AuthenticationException{
 		System.out.println(dto.getName());
-		ProjectData data=service.handleProjectCreation(dto.getName(),slug);
+		ProjectData data=service.handleProjectCreation(dto.getName(),slug,dto.getDesc(),dto.getStack(),dto.getGithub());
 		return new ResponseEntity<>(new ApiResponse(true,"Project has been created",data),HttpStatus.CREATED);
 
 	}
 	
-	@PutMapping("/org/{slug}/projects/{id}")
-	public ResponseEntity<ApiResponse> updateProject(@PathVariable String slug,@PathVariable long id,@RequestBody ProjectCreationDTO dto) throws AuthenticationException, AccessDeniedException{
-		ProjectData data=service.handleProjectUpdation(id,slug,dto.getName());
+	@PutMapping("projects/{id}")
+	public ResponseEntity<ApiResponse> updateProject(@PathVariable long id,@RequestBody ProjectCreationDTO dto) throws AuthenticationException, AccessDeniedException{
+		ProjectData data=service.handleProjectUpdation(id,dto.getName(),dto.getDesc(),dto.getStack(),dto.getGithub());
 		return new ResponseEntity<>(new ApiResponse(true,"Project has been updated",data),HttpStatus.OK);
 
 	}
@@ -50,7 +50,7 @@ public class ProjectController {
 	
 	@GetMapping("/org/{slug}/projects")
 	public ResponseEntity<ApiResponse> getProjects(@PathVariable String slug) throws AuthenticationException{
-		List<ProjectData> data=service.handleGetAllProject(slug);
+		List<ProjectInfo> data=service.handleGetAllProject(slug);
 		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
 	}
 	@GetMapping("projects/{id}")

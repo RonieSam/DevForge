@@ -11,16 +11,24 @@ import org.springframework.stereotype.Service;
 
 import com.spring.devforge.authentication.AuthService;
 import com.spring.devforge.authentication.UserDataJpa;
+import com.spring.devforge.authentication.Users;
+import com.spring.devforge.logs.ProjectLogsDataJpa;
+import com.spring.devforge.logs.ProjectLogsService;
 import com.spring.devforge.membership.Membership;
 import com.spring.devforge.membership.MembershipDataJpa;
 import com.spring.devforge.membership.MembershipService;
 import com.spring.devforge.orgainzation.OrgDataJpa;
+import com.spring.devforge.orgainzation.Organization;
 import com.spring.devforge.permissions.PermissionService;
 import com.spring.devforge.permissions.Permissions;
-
+import com.spring.devforge.task.TaskDataJpa;
+import com.spring.devforge.task.TaskService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Service
 public class ProjectService {
@@ -44,18 +52,36 @@ public class ProjectService {
 	@Autowired
 	AuthService authService;
 	
+	@Autowired
+	ProjectLogsService logService;
 	
 	@Autowired
 	PermissionService permService;
 	
+	@Autowired
+	TaskService taskService;
 	
-	public ProjectData handleProjectCreation(String name,String slug) throws AccessDeniedException{
-		
+	
+	
+//		public Project(@NotBlank @Size(min = 5) String name, @NotNull Users createdBy,@NotNull Organization org,@NotNull String desc,List<String> stack,String github) {
+
+	public ProjectData handleProjectCreation(String name,String slug,String desc,List<String> stack,String github) throws AccessDeniedException{
 		Membership reqMembership=membershipService.getMembership(slug);
 		permService.checkPermissions(reqMembership.getRole(), Permissions.PROJECT_CREATE);
-		Project proj=new Project(name,reqMembership.getUser(),reqMembership.getOrg());
+		Project proj=new Project(name,reqMembership.getUser(),reqMembership.getOrg(),desc,stack,github);
 		repo.save(proj);
-		return ProjectMapper.toData(proj);
+		logService.addLogs("Created "+name+" Project", reqMembership.getUser(), proj);
+		return new ProjectData(
+		        proj.getId(),
+		        proj.getName(),
+		        proj.getOrg().getSlug(),
+		        proj.getCreatedBy().getUsername(),
+		        proj.getDesc(),
+		        proj.getStack(),
+		        proj.getGithub(),
+		        logService.getProjectLogs(proj.getId()),
+		        taskService.handleGetAllProjTasks(proj.getId())
+		    );
 	}
 	
 	@Transactional
@@ -66,30 +92,55 @@ public class ProjectService {
 		repo.deleteById(id);
 	}
 	
-	public ProjectData handleProjectUpdation(long id,String slug,String name) throws AccessDeniedException{
+	public ProjectData handleProjectUpdation(long id,String name,String desc,List<String> stack,String github) throws AccessDeniedException{
 
-		Membership reqMembership=membershipService.getMembership(slug);
+		Project proj=repo.findById(id).orElseThrow(()->new EntityNotFoundException("The project does not exsist"));
+		Membership reqMembership=membershipService.getMembership(proj.getOrg().getSlug());
 		permService.checkPermissions(reqMembership.getRole(), Permissions.PROJECT_UPDATE);
 		
-		Project proj=repo.findById(id).orElseThrow(()->new EntityNotFoundException("The project does not exsist"));
-		if(proj==null)throw new EntityNotFoundException("Project does not exsist");
 		proj.setName(name);		
-		proj.newUpdate();
+		proj.setDesc(desc);
+		proj.setStack(stack);
+		proj.setGithub(github);
 		repo.save(proj);
-		return ProjectMapper.toData(proj);
+		logService.addLogs("Edited "+name+" Project Info", reqMembership.getUser(), proj);
+
+		return new ProjectData(
+		        proj.getId(),
+		        proj.getName(),
+		        proj.getOrg().getSlug(),
+		        proj.getCreatedBy().getUsername(),
+		        proj.getDesc(),
+		        proj.getStack(),
+		        proj.getGithub(),
+		        logService.getProjectLogs(proj.getId()),
+		        taskService.handleGetAllProjTasks(proj.getId())
+		    );
 	}
 
-	public List<ProjectData> handleGetAllProject(String slug){
+	public List<ProjectInfo> handleGetAllProject(String slug){
 		Membership reqMembership=membershipService.getMembership(slug);
 		List<Project> projs=new ArrayList<>();
 		projs=repo.findAllByOrgId(reqMembership.getOrg().getId());
-		List<ProjectData> data=projs.stream().map(ProjectMapper::toData).toList();
+		List<ProjectInfo> data=projs.stream().map(ProjectMapper::toInfo).toList();
 		return data;
 	}
 	public ProjectData handleGetProject(long id) throws AccessDeniedException{
 		Project proj=repo.findById(id).orElseThrow(()->new EntityNotFoundException("Project not found"));
+		System.out.println(proj.getLogs().size());
+		System.out.println(proj.getTasks().size());
 		membershipService.getMembership(proj.getOrg().getSlug());
-		return ProjectMapper.toData(proj);
+		return new ProjectData(
+		        proj.getId(),
+		        proj.getName(),
+		        proj.getOrg().getSlug(),
+		        proj.getCreatedBy().getUsername(),
+		        proj.getDesc(),
+		        proj.getStack(),
+		        proj.getGithub(),
+		        logService.getProjectLogs(proj.getId()),
+		        taskService.handleGetAllProjTasks(proj.getId())
+		    );
 	}
 	
 }

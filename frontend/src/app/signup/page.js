@@ -11,7 +11,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const { signupUser, signAuthError } = useContext(AuthContext);
+  const { signupUser} = useContext(AuthContext);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -25,7 +25,6 @@ export default function Signup() {
       <div className="w-[420px] bg-white rounded-xl shadow-md p-6">
         
         {/* Error */}
-        {signAuthError && <AuthError />}
 
         {/* Title */}
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">

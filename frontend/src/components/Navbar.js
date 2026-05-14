@@ -9,7 +9,7 @@ export default function Navbar() {
 
   return (
     <div className="flex justify-between items-center bg-white px-6 h-16 border-b shadow-sm">
-      <Link href={"/"} className="text-xl font-semibold text-gray-800">
+      <Link href={"/dashboard"} className="text-xl font-semibold text-gray-800">
         DevForge
       </Link>
 

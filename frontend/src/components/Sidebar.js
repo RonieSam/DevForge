@@ -2,6 +2,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import TeamMenu from "./TeamMenu";
 import { OrgContext } from "@/context/OrgContext";
+import Link from "next/link";
 
 export default function Sidebar() {
   const { org, allProjects } = useContext(OrgContext);
@@ -29,12 +30,13 @@ export default function Sidebar() {
 
         <div className="flex flex-col gap-1">
           {allProjects?.map((proj) => (
-            <div
+            <Link
               key={proj.id}
               className="px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition"
+              href={`/dashboard/project/${proj.id}`}
             >
               {proj.name}
-            </div>
+            </Link>
           ))}
         </div>
       </div>

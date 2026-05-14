@@ -8,11 +8,13 @@ import java.util.List;
 import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
 
 import com.spring.devforge.authentication.AuthService;
 import com.spring.devforge.authentication.UserDataJpa;
 import com.spring.devforge.authentication.Users;
+import com.spring.devforge.logs.ProjectLogsService;
 import com.spring.devforge.membership.Membership;
 import com.spring.devforge.membership.MembershipDataJpa;
 import com.spring.devforge.membership.MembershipService;
@@ -53,6 +55,9 @@ public class TaskService {
 	
 	@Autowired
 	AuthService authService;
+	
+	@Autowired
+	ProjectLogsService logService;
 
 	public TaskData handleTaskCreation(String desc,LocalDateTime deadline,long projectId,String assignedTo,Priority priority) throws AuthenticationException, AccessDeniedException {
 		Project proj=projRepo.findById(projectId).orElseThrow(()-> new EntityNotFoundException("Project does not exisit"));
@@ -63,6 +68,8 @@ public class TaskService {
 		if(!memRepo.existsByUserIdAndOrgId(user.getId(), proj.getOrg().getId()))throw new EntityNotFoundException("Recipiant is not part of the organization");
 		Tasks newTask=new Tasks(desc,deadline,proj,user,reqMembership.getUser(),priority);
 		repo.save(newTask);
+		logService.addLogs("Assigned "+desc+" task to "+user.getUsername(), reqMembership.getUser(), proj);
+
 		return TaskMapper.toData(newTask);
 	}
 	
@@ -89,6 +96,8 @@ public class TaskService {
 			task.setStatus(status);
 		}
 		repo.save(task);
+		logService.addLogs("Updated "+desc+" task info", reqMembership.getUser(), proj);
+
 		return TaskMapper.toData(task);
 	}
 	
@@ -98,6 +107,8 @@ public class TaskService {
 		if(proj==null)throw new EntityNotFoundException("Project does not exisit");
 		Membership reqMembership=memService.getMembership(proj.getOrg().getSlug());
 		permService.checkPermissions(reqMembership.getRole(), Permissions.TASK_DELETE);
+		logService.addLogs("deleted "+task.getDescription()+" task", reqMembership.getUser(), proj);
+
 		repo.delete(task);
 	}
 	
@@ -124,6 +135,11 @@ public class TaskService {
 		}
 		return tasks.stream().map(TaskMapper::toData).toList();
 
+	}
+	
+	public List<TaskData> handleGetAllProjTasks(Long projId){
+		List<Tasks> tasks=repo.findAllByProjectId(projId);
+		return tasks.stream().map(TaskMapper::toData).toList();
 	}
 	
 	
