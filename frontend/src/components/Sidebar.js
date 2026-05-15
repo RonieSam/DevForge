@@ -3,12 +3,13 @@ import { useContext, useEffect, useRef, useState } from "react";
 import TeamMenu from "./TeamMenu";
 import { OrgContext } from "@/context/OrgContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
-  const { org, allProjects } = useContext(OrgContext);
-  const [showTeams, setShowTeams] = useState(false);
-  const teamRef = useRef();
-
+  const { org, allProjects,checkPermission,createProject,onProjectCreation} = useContext(OrgContext)
+  const [showTeams, setShowTeams] = useState(false)
+  const teamRef = useRef()
+  const router=useRouter()
   useEffect(() => {
     function handleClickOutside(e) {
       if (teamRef.current && !teamRef.current.contains(e.target)) {
@@ -19,15 +20,23 @@ export default function Sidebar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  async function handleNewProject(){
+    const id=await onProjectCreation();
+    router.push(`/dashboard/project/${id}`)
+  }
+
   return (
     
 <div className="w-64 h-[calc(100vh-64px)] bg-white border-r flex flex-col justify-between">      
       {/* Top - Projects */}
       <div className="p-4">
-        <h3 className="text-xs text-gray-500 uppercase mb-3">
+        <div className="flex justify-between items-center flex-row mb-3">
+        <h3 className="text-xs text-gray-500 uppercase">
           Projects
         </h3>
-
+        {checkPermission("PROJECT_CREATE")?<button className="w-6 h-6 flex items-center justify-center rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition" onClick={handleNewProject}> + </button>
+        :<div className="w-6 h-6"></div>}
+      </div>
         <div className="flex flex-col gap-1">
           {allProjects?.map((proj) => (
             <Link

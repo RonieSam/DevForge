@@ -2,6 +2,7 @@
 import { getAllUserOrgApi, getOrgPrefix, getProjects, isMember, sendRequestApi } from "@/api/orgApi";
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthProvider";
+import { createProject } from "@/api/projApi";
 
 export const OrgContext=createContext();
 
@@ -13,19 +14,21 @@ export default function OrgProvider({children}){
     const {user,loading} =useContext(AuthContext)
     
     useEffect(()=>{
-        async function getUserOrgs(){
-            const orgs=await getAllUserOrgApi();
-            setAllUserOrgs(orgs)
-        }
-        async function getAllProjects(){
-            const projects=await getProjects(org.slug);
-            setAllProjects(projects);
-        }
+        
         if(!user&&!loading) setAllUserOrgs([])
         else getUserOrgs()
         if(!org)setAllProjects([]);
         else getAllProjects();
     },[user,loading,org])
+
+    async function getUserOrgs(){
+            const orgs=await getAllUserOrgApi();
+            setAllUserOrgs(orgs)
+        }
+    async function getAllProjects(){
+        const projects=await getProjects(org.slug);
+        setAllProjects(projects);
+    }
 
     async function getOrgsQuery(pre){
         try{
@@ -36,6 +39,7 @@ export default function OrgProvider({children}){
             throw e;
         }
     }
+
 
     async function checkIfMember(slug){
         try{
@@ -51,13 +55,31 @@ export default function OrgProvider({children}){
         setOrg(org)
     }
 
+    function projectAccessCheck(projId){
+        
+        return org&&allProjects&&allProjects.some(
+            (project)=>projId==project.id
+        )
+    }
+
     async function sendRequest(slug,msg){
         const res=await sendRequestApi(slug,msg)
         return res;
         
     } 
+
+    function checkPermission(action){
+        return org&&org.perms.includes(action);
+
+    }
+
+    async function onProjectCreation(){
+        const proj=await createProject(org.slug,allProjects.length)
+        getAllProjects();
+        return proj.id;
+    }
     return(
-        <OrgContext.Provider value={{org,allUserOrgs,selectOrg,getOrgsQuery,allOrgs,checkIfMember,sendRequest,allProjects}}>
+        <OrgContext.Provider value={{org,allUserOrgs,selectOrg,getOrgsQuery,allOrgs,checkIfMember,sendRequest,allProjects,checkPermission,projectAccessCheck,onProjectCreation}}>
             {children}
         </OrgContext.Provider>
     )

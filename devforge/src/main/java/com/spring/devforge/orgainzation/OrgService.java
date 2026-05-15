@@ -48,8 +48,6 @@ public class OrgService {
 	}
 	
 	public OrgData handleOrgCreation(Organization org)throws EntityNotFoundException{
-		
-		
 		Users owner=authService.getUser();	
 		if(owner==null)throw new EntityNotFoundException("This account is invalid");
 		org.setOwner(owner);
