@@ -62,11 +62,11 @@ public class AuthService {
 	public HttpHeaders getCookieHeader(String token,int age) {
 		ResponseCookie cookie=ResponseCookie.from("token",token)
 				.httpOnly(true)
-				.maxAge(age)
-				.path("/")
-				.secure(false)
-				.sameSite("Strict")
-				.build();
+		        .secure(true)
+		        .sameSite("None")
+		        .path("/")
+		        .maxAge(60 * 60)
+		        .build();
 		HttpHeaders headers=new HttpHeaders();
 		headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
 		return headers;
