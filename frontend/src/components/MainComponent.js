@@ -8,9 +8,17 @@ export default function MainComponent({children}) {
     const {loading}=useContext(AuthContext)
 
   return (
-    <div className='flex min-h-screen justify-center items-center border'>
-        {!loading&&<main className="flex-1">{children}</main>}
-        {loading&&<ThreeDot color={"blue"}/>}
-    </div>
+    <>
+      {loading && (
+        <div className='flex flex-1 justify-center items-center'>
+          <ThreeDot color={"blue"}/>
+        </div>
+      )}
+      {!loading && (
+        <main className="flex-1 flex flex-col min-h-0">
+          {children}
+        </main>
+      )}
+    </>
   )
 }

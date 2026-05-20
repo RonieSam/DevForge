@@ -19,37 +19,37 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       
       {/* Card */}
-      <div className="w-[420px] bg-white rounded-xl shadow-md p-6">
+      <div className="w-full max-w-sm bg-white rounded-xl border border-gray-200 shadow-sm p-6">
         
         {/* Error */}
 
         {/* Title */}
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+        <h2 className="text-xl font-semibold mb-6 text-gray-800">
           Create your account
         </h2>
 
         {/* Form */}
-        <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        <form onSubmit={onSubmit} className="flex flex-col gap-3.5">
           
           {/* Name Row */}
           <div className="flex gap-3">
-            <div className="flex flex-col w-1/2">
-              <label className="text-sm text-gray-600 mb-1">First Name</label>
+            <div className="flex flex-col gap-1.5 w-1/2">
+              <label className="text-xs font-medium text-gray-500">First Name</label>
               <input
-                className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3.5 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 placeholder="First name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </div>
 
-            <div className="flex flex-col w-1/2">
-              <label className="text-sm text-gray-600 mb-1">Last Name</label>
+            <div className="flex flex-col gap-1.5 w-1/2">
+              <label className="text-xs font-medium text-gray-500">Last Name</label>
               <input
-                className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3.5 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 placeholder="Last name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
@@ -58,10 +58,10 @@ export default function Signup() {
           </div>
 
           {/* Username */}
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">Username</label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-gray-500">Username</label>
             <input
-              className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3.5 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               placeholder="Enter username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -69,10 +69,10 @@ export default function Signup() {
           </div>
 
           {/* Email */}
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">Email</label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-gray-500">Email</label>
             <input
-              className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3.5 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -80,11 +80,11 @@ export default function Signup() {
           </div>
 
           {/* Password */}
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">Password</label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-gray-500">Password</label>
             <input
               type={showPassword ? "text" : "password"}
-              className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3.5 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -92,18 +92,19 @@ export default function Signup() {
           </div>
 
           {/* Show Password */}
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2 text-xs text-gray-500">
             <input
               type="checkbox"
               checked={showPassword}
               onChange={() => setShowPassword(!showPassword)}
+              className="rounded"
             />
             Show Password
           </div>
 
           {/* Button */}
           <button
-            className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white text-sm font-medium py-2.5 rounded-lg hover:bg-blue-700 transition mt-1"
             type="submit"
           >
             Create Account

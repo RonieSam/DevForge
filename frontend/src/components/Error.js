@@ -4,6 +4,8 @@ import React, { useContext } from 'react'
 export function AuthError() {
     const {loginAuthError}=useContext(AuthContext)
   return (
-    <div className='h-13 flex items-center justify-center bg-red-100 border-2 border-red-700 m-2 text-red-500' >⚠︎ {loginAuthError}</div>
+    <div className='flex items-center justify-center bg-red-50 border border-red-200 rounded-lg mx-2 my-2 px-4 py-2.5 text-sm text-red-600'>
+      ⚠︎ {loginAuthError}
+    </div>
   )
 }

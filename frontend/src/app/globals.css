@@ -4,3 +4,33 @@
   --background: #ffffff !important;
   --foreground: #171717 !important;
 }
+
+/* ── Base resets & consistent foundations ── */
+body {
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Standardise form inputs across the app */
+input,
+select,
+textarea {
+  font-size: 0.875rem; /* 14px – keeps inputs uniform */
+  line-height: 1.5;
+}
+
+/* Scrollbar polish (Webkit) – subtle, unobtrusive */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

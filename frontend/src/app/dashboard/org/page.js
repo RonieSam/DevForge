@@ -15,7 +15,7 @@ export default function Org() {
 
   const [search, setSearch] = useState("");
   const [hasRequest, setHasRequest] = useState(null);
-  const searchRef=useRef();
+  const searchRef = useRef();
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -24,21 +24,21 @@ export default function Org() {
       }
     }, 400);
 
-    function handleClickSearch(e){
-      if(searchRef.current && !searchRef.current.contains(e.target))setSearch("");
+    function handleClickSearch(e) {
+      if (searchRef.current && !searchRef.current.contains(e.target)) setSearch("");
     }
-    document.addEventListener("mousedown",handleClickSearch);
+    document.addEventListener("mousedown", handleClickSearch);
     return () => {
       clearTimeout(delay);
-      document.removeEventListener("mousedown",handleClickSearch)
+      document.removeEventListener("mousedown", handleClickSearch)
     }
   }, [search]);
 
   async function handleSelectOrg(org) {
     const res = await checkIfMember(org.slug);
     if (res === true) {
-        selectOrg(org);
-        setSearch("");
+      selectOrg(org);
+      setSearch("");
     } else {
       setHasRequest(org);
       setSearch("");
@@ -46,82 +46,84 @@ export default function Org() {
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      
-      {/* Search Card */}
-      <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-sm mb-6">
-        <h2 className="text-lg font-semibold mb-4">Find Organization</h2>
+    <div className="p-6 bg-gray-50 min-h-full">
+      <div className="max-w-2xl mx-auto space-y-6">
 
-        <div className="flex gap-2 relative">
-          <input
-            className="flex-1 px-4 py-2 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={search}
-            placeholder="Search by slug..."
-            onChange={(e) => setSearch(e.target.value)}
+        {/* Search Card */}
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5">
+          <h2 className="text-base font-semibold text-gray-800 mb-4">Find Organization</h2>
+
+          <div className="flex gap-2 relative">
+            <input
+              className="flex-1 px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              value={search}
+              placeholder="Search by slug..."
+              onChange={(e) => setSearch(e.target.value)}
+            />
+
+            <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition shrink-0">
+              + New
+            </button>
+
+            {/* Search Results */}
+            {search.trim().length > 1 && (
+              <div ref={searchRef} className="absolute top-full mt-1.5 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50">
+                {allOrgs.map((org) => (
+                  <div
+                    key={org.id}
+                    onClick={() => handleSelectOrg(org)}
+                    className="px-4 py-2.5 flex justify-between text-sm hover:bg-gray-50 cursor-pointer transition"
+                  >
+                    <span className="font-medium text-gray-800">{org.name}</span>
+                    <span className="text-gray-400">{org.slug}</span>
+                    <span className="text-gray-300">{org.owner}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Request Modal */}
+        {hasRequest && (
+          <OrgRequest
+            org={hasRequest}
+            setHasRequest={setHasRequest}
+            sendRequest={sendRequest}
           />
+        )}
 
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            + New
-          </button>
+        {/* Your Orgs */}
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5">
+          <h2 className="text-base font-semibold text-gray-800 mb-4">
+            Your Organizations
+          </h2>
 
-          {/* Search Results */}
-          {search.trim().length > 1 && (
-            <div  ref={searchRef} className="absolute top-full mt-2 w-full bg-white border rounded-lg shadow-md overflow-hidden z-50">
-              {allOrgs.map((org) => (
+          {allUserOrgs && (
+            <div className="flex flex-col gap-1">
+              {allUserOrgs.map((org) => (
                 <div
-                  key={org.id}
                   onClick={() => handleSelectOrg(org)}
-                  className="px-4 py-2 flex justify-between text-sm hover:bg-gray-100 cursor-pointer"
+                  key={org.id}
+                  className="flex justify-between items-center px-4 py-3 rounded-lg hover:bg-gray-50 cursor-pointer transition"
                 >
-                  <span>{org.name}</span>
-                  <span className="text-gray-500">{org.slug}</span>
-                  <span className="text-gray-400">{org.owner}</span>
+                  <div>
+                    <div className="text-sm font-medium text-gray-800">
+                      {org.name}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      {org.slug}
+                    </div>
+                  </div>
+
+                  <div className="text-xs text-gray-400">
+                    {org.owner}
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </div>
-      </div>
-
-      {/* Request Modal */}
-      {hasRequest && (
-        <OrgRequest
-          org={hasRequest}
-          setHasRequest={setHasRequest}
-          sendRequest={sendRequest}
-        />
-      )}
-
-      {/* Your Orgs */}
-      <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-sm">
-        <h2 className="text-lg font-semibold mb-4">
-          Your Organizations
-        </h2>
-
-        {allUserOrgs && (
-          <div className="flex flex-col gap-2">
-            {allUserOrgs.map((org) => (
-              <div
-                onClick={()=>handleSelectOrg(org)}
-                key={org.id}
-                className="flex justify-between items-center px-4 py-3 rounded-lg hover:bg-gray-50 cursor-pointer transition"
-              >
-                <div>
-                  <div className="font-medium text-gray-800">
-                    {org.name}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {org.slug}
-                  </div>
-                </div>
-
-                <div className="text-sm text-gray-400">
-                  {org.owner}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
