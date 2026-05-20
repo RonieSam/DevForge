@@ -17,7 +17,8 @@ build/
 
 # =========================
 
-
+logs/
+*.log
 
 # =========================
 
@@ -100,3 +101,4 @@ dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+!src/main/java/com/spring/devforge/logs/
