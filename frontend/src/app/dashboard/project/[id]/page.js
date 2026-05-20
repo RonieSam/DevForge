@@ -224,7 +224,7 @@ export default function ProjectWorkspace() {
                   <div className="mt-4 flex gap-2 shrink-0">
                     <input
                       placeholder="Send a message..."
-                      className="flex-1 bg-white border border-gray-200 rounded-lg px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                      className="flex-1 min-w-0 bg-white border border-gray-200 rounded-lg px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                       value={content}
                       onChange={(e) => { setContent(e.target.value) }}
                     />
