@@ -2,6 +2,7 @@ import { Edu_AU_VIC_WA_NT_Arrows } from "next/font/google";
 import { apiClient } from "./apiClient";
 
 
+
 export async function getProject(id){
     try{
         const project=await apiClient.get(`/projects/${id}`)
@@ -36,5 +37,16 @@ export async function createProject(slug,cnt){
     catch(e){
         console.log(e.message)
         throw e
+    }
+}
+
+export async function getMessage(projId){
+    try{
+        const messages=await apiClient.get(`/projects/${projId}/messages`)
+        return messages.data.data;
+    }
+    catch(e){
+        console.log(e);
+        throw e;
     }
 }

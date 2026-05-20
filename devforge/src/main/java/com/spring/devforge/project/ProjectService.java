@@ -127,8 +127,6 @@ public class ProjectService {
 	}
 	public ProjectData handleGetProject(long id) throws AccessDeniedException{
 		Project proj=repo.findById(id).orElseThrow(()->new EntityNotFoundException("Project not found"));
-		System.out.println(proj.getLogs().size());
-		System.out.println(proj.getTasks().size());
 		membershipService.getMembership(proj.getOrg().getSlug());
 		return new ProjectData(
 		        proj.getId(),

@@ -1,32 +1,41 @@
 "use client";
 
-import { editProject, getProject } from "@/api/projApi";
+import { editProject, getMessage, getProject } from "@/api/projApi";
 import ProjectForm from "@/components/ProjectForm";
 import { AuthContext } from "@/context/AuthProvider";
 import { OrgContext } from "@/context/OrgContext";
+import { SocketContext } from "@/context/SocketContext";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function ProjectWorkspace() {
   const params = useParams();
   const router = useRouter();
   const {checkPermission,projectAccessCheck}= useContext(OrgContext)
+  const { subscribe, publish } = useContext(SocketContext);
+  const {user}=useContext(AuthContext)
 
+  const messageContainerRef=useRef(null)
   const [edit, setEdit] = useState(false);
   const [project, setProject] = useState(null);
-
+  const [messages,setMessages]=useState([]);
+  const [content,setContent]=useState("");
+  
   useEffect(() => {
     async function initialize() {
       try {
-
-        const proj = await getProject(params.id);
-        setProject(proj.data);
+        const proj = await getProject(params.id)
+        setProject(proj.data)
+        const mes=await getMessage(params.id)
+        setMessages(mes)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     }
+
+   
     if(!projectAccessCheck(params.id)){
       toast.error("Project not found",{
         id:"ProjectNotFound"
@@ -34,26 +43,51 @@ export default function ProjectWorkspace() {
       router.push("/dashboard")
     }
     initialize();
-  }, []);
 
+    const sub=subscribe(`/topic/projects/${params.id}`,(message)=>{
+      const data=JSON.parse(message.body)
+      setMessages(prev=>([...prev,data]))
+    })
+    
+
+    return()=>{
+      sub?.unsubscribe()
+    }
+  }, [params.id]);
+
+   useEffect(() => {
+
+  if(messageContainerRef.current){
+
+    messageContainerRef.current.scrollTop =
+      messageContainerRef.current.scrollHeight;
+  }
+
+}, [messages]);
+
+
+ 
+
+  function handleSendMsg(){
+    publish(
+      `/app/projects/${params.id}`,
+      {
+        "sender":user.username,
+        content
+      }
+    )
+    setContent("")
+  }
+
+
+  
   async function handleEdit(form){
     await editProject(form)
     const proj = await getProject(params.id);
     setProject(proj.data);
   }
 
-  const discussions = [
-    {
-      user: "Ronie",
-      msg: "Backend APIs are completed for task management.",
-      time: "2 mins ago",
-    },
-    {
-      user: "John",
-      msg: "Working on dashboard frontend now.",
-      time: "10 mins ago",
-    },
-  ];
+ 
 
   return (
     <>
@@ -181,23 +215,22 @@ export default function ProjectWorkspace() {
       </h2>
 
       {/* Messages */}
-      <div className="space-y-5 overflow-y-auto flex-1 pr-2 min-h-0">
+      <div className="space-y-5 overflow-y-auto flex-1 pr-2 min-h-0" ref={messageContainerRef}>
 
-        {discussions.map((msg, idx) => (
+        {messages.map((msg, idx) => 
+        
+        
+          (
+          
           <div key={idx}>
-
             <div className="flex items-center justify-between mb-1">
               <p className="font-medium">
-                {msg.user}
+                {msg.sender}
               </p>
-
-              <span className="text-xs text-zinc-500">
-                {msg.time}
-              </span>
             </div>
 
             <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-3 text-sm text-zinc-700">
-              {msg.msg}
+              {msg.content}
             </div>
 
           </div>
@@ -211,9 +244,11 @@ export default function ProjectWorkspace() {
         <input
           placeholder="Send a message..."
           className="flex-1 bg-white border border-zinc-300 rounded-xl px-4 py-3 outline-none focus:border-zinc-500"
+          value={content}
+          onChange={(e)=>{setContent(e.target.value)}}
         />
 
-        <button className="bg-zinc-900 text-white px-5 rounded-xl font-medium hover:bg-zinc-800 transition">
+        <button className="bg-zinc-900 text-white px-5 rounded-xl font-medium hover:bg-zinc-800 transition" onClick={handleSendMsg}>
           Send
         </button>
 

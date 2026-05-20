@@ -6,6 +6,7 @@ import java.util.List;
 import com.spring.devforge.authentication.Users;
 import com.spring.devforge.comment.Comments;
 import com.spring.devforge.logs.ProjectLogs;
+import com.spring.devforge.messages.Message;
 import com.spring.devforge.orgainzation.Organization;
 import com.spring.devforge.task.Tasks;
 
@@ -49,24 +50,18 @@ public class Project {
 	List<Comments> comments;
 	@OneToMany(mappedBy="proj",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
 	List<ProjectLogs> logs;
+	@OneToMany(mappedBy="project",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
+	List<Message> messages;
+	@OneToMany(mappedBy="project",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
+	List<Tasks> tasks;
 	public String getDescription() {
 		return description;
 	}
 
 
 
-	public List<Comments> getComments() {
-		return comments;
-	}
 
 
-
-	public List<ProjectLogs> getLogs() {
-		return logs;
-	}
-
-	@OneToMany(mappedBy="project",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.LAZY)
-	List<Tasks> tasks;
 	Project(){}
 	
 	
