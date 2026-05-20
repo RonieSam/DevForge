@@ -30,20 +30,20 @@ public class RequestController {
 		return new ResponseEntity<>(new ApiResponse(true,"Request has been sent",data),HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/org/{slug}/request")
-	public ResponseEntity<ApiResponse> getAllRequest(@PathVariable String slug ) throws  AccessDeniedException {
-		List<RequestData> data=service.handleGetAllRequests(slug);
+	@GetMapping("/org/{orgId}/request")
+	public ResponseEntity<ApiResponse> getAllRequest(@PathVariable long orgId ) throws  AccessDeniedException {
+		List<RequestData> data=service.handleGetAllRequests(orgId);
 		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
 	}
 	
-	@PostMapping("/org/{slug}/request/{id}")
-	public ResponseEntity<ApiResponse> reviewRequest(@PathVariable String slug,@PathVariable long id,@RequestBody RequestReviewDto r ) throws AccessDeniedException, BadRequestException {
-		RequestData data=service.handleReviewRequest(id, r.getStatus(),slug);
+	@PostMapping("request/{id}")
+	public ResponseEntity<ApiResponse> reviewRequest(@PathVariable long id,@RequestBody RequestReviewDto r ) throws AccessDeniedException, BadRequestException {
+		RequestData data=service.handleReviewRequest(id, r.getStatus());
 		return new ResponseEntity<>(new ApiResponse(true,"Request has been reviewed",data),HttpStatus.OK);
 	}
-	@DeleteMapping("/org/{slug}/request/{id}")
-	public ResponseEntity<ApiResponse> deleteRequest(@PathVariable String slug,@PathVariable long id,@RequestBody RequestReviewDto r ) throws AccessDeniedException, BadRequestException {
-		service.handleDeleteRequest(id,slug);
-		return new ResponseEntity<>(new ApiResponse(true,"Request has been deleted",null),HttpStatus.OK);
-	}
+//	@DeleteMapping("/org/{slug}/request/{id}")
+//	public ResponseEntity<ApiResponse> deleteRequest(@PathVariable String slug,@PathVariable long id,@RequestBody RequestReviewDto r ) throws AccessDeniedException, BadRequestException {
+//		service.handleDeleteRequest(id,slug);
+//		return new ResponseEntity<>(new ApiResponse(true,"Request has been deleted",null),HttpStatus.OK);
+//	}
 }

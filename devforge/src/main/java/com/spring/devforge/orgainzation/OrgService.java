@@ -12,10 +12,15 @@ import com.spring.devforge.authentication.AuthService;
 import com.spring.devforge.authentication.UserDataJpa;
 import com.spring.devforge.authentication.Users;
 import com.spring.devforge.membership.Membership;
+import com.spring.devforge.membership.MembershipData;
 import com.spring.devforge.membership.MembershipDataJpa;
 import com.spring.devforge.membership.MembershipService;
 import com.spring.devforge.permissions.PermissionService;
 import com.spring.devforge.permissions.Permissions;
+import com.spring.devforge.project.ProjectInfo;
+import com.spring.devforge.project.ProjectService;
+import com.spring.devforge.requests.RequestData;
+import com.spring.devforge.requests.RequestService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -36,17 +41,41 @@ public class OrgService {
 	MembershipService membershipService;
 	
 	@Autowired
+	RequestService reqService;
+	
+	@Autowired
 	PermissionService permService;
 	
 	@Autowired
 	AuthService authService;
 	
+	@Autowired
+	ProjectService projService;
+	
 	public List<UserOrgData> handleGetAllOrg(){
 		Users user=authService.getUser();
 		List<Membership> orgs=membershipRepo.findAllByUserId(user.getId());
-		return orgs.stream().map(UserOrgMapper::toData).toList();
+		return orgs.stream().map(OrgMapper::toData).toList();
 	}
 	
+	public OrgInfo handleGetOrg(long id) throws AccessDeniedException {
+		Organization org=repo.findById(id).orElseThrow(()->new EntityNotFoundException("Organization not found"));
+		Membership mem=membershipService.getMembership(org.getSlug());
+		List<MembershipData> members=membershipService.handleGetAllMembers(id);
+		List<RequestData> requests=reqService.handleGetAllRequests(id);
+		
+		List<ProjectInfo> projects=projService.handleGetAllProject(org.getSlug());
+		return new OrgInfo(
+				org.getId(),
+				org.getSlug(),
+				org.getOwner().getUsername(),
+				members,
+				requests,
+				projects
+				);
+	}
+//	String slug, String owner, List<MembershipData> members,
+//	List<RequestData> requests, List<ProjectInfo> projects
 	public UserOrgData handleOrgCreation(String name)throws EntityNotFoundException{
 		Users owner=authService.getUser();	
 		if(owner==null)throw new EntityNotFoundException("This account is invalid");
@@ -64,7 +93,7 @@ public class OrgService {
 		Organization org=new Organization(name,owner,slug);
 		repo.save(org);
 		Membership mem=membershipService.handleOwnerCreation(org, owner);
-		return UserOrgMapper.toData(mem);
+		return OrgMapper.toData(mem);
 	}
 	
 	

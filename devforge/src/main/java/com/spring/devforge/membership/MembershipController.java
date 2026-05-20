@@ -46,11 +46,11 @@ public class MembershipController {
 		}
 	
 
-	@GetMapping("/org/{slug}/users")
-	public ResponseEntity<ApiResponse> getAllUsers(@PathVariable String slug) throws AuthenticationException{
-		List<MembershipData> data=service.handleGetAllMembers(slug);
-		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
-	}
+//	@GetMapping("/org/{slug}/users")
+//	public ResponseEntity<ApiResponse> getAllUsers(@PathVariable String slug) throws AuthenticationException{
+//		List<MembershipData> data=service.handleGetAllMembers(slug);
+//		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
+//	}
 	
 	@GetMapping("/org/{slug}/me")
 	public ResponseEntity<ApiResponse> isMember(@PathVariable String slug) throws AuthenticationException{

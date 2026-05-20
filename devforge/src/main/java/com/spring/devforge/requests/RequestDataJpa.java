@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface RequestDataJpa extends JpaRepository<Request,Long>{
-	@Query("SELECT r FROM Request r JOIN FETCH r.user LEFT JOIN FETCH r.reviewedBy WHERE r.org.id=:orgId")
-	public List<Request> findAllByOrgId(@Param("orgId")long orgId);
+	@Query("SELECT r FROM Request r JOIN FETCH r.user LEFT JOIN FETCH r.reviewedBy WHERE r.org.id=:orgId AND r.status=:status")
+	public List<Request> findAllByOrgIdAndStatus(@Param("orgId")long orgId,@Param("status")RequestStatus status);
 	public Request findByUserIdAndOrgId(long userId,long orgId);
 	public boolean existsByUserIdAndOrgId(long userId,long orgId);
 	

@@ -45,8 +45,6 @@ public class MembershipService {
 	
 	public Membership getMembership(String slug) throws InsufficientAuthenticationException{
 	    Users user=authService.getUser();
-	    System.out.println(user.getUsername());
-		System.out.println(user.getEmail());
 	    Organization org = orgRepo.findBySlug(slug);
 	    if (user == null || org == null) {
 	        throw new EntityNotFoundException("User or organization does not exist");
@@ -148,13 +146,8 @@ public class MembershipService {
 		repo.deleteById(membership.getId());
 	}
 	
-	public List<MembershipData> handleGetAllMembers(String slug) throws AuthenticationException{
-		Organization org=orgRepo.findBySlug(slug);
-		if(org==null)throw new EntityNotFoundException("Invalid orgaanization");
-		
-		getMembership(slug);
-		List<Membership> members=repo.findAllByOrgId(org.getId());
-		
+	public List<MembershipData> handleGetAllMembers(long id) throws AuthenticationException{
+		List<Membership> members=repo.findAllByOrgId(id);
 		return members.stream().map(MemberMapper::toData).toList();
 	}
 

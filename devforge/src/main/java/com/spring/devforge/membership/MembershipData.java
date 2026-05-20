@@ -7,14 +7,12 @@ public class MembershipData {
 	String username;
 	Role role;
 	String slug;
-	LocalDateTime requestedAt;
-	public MembershipData(long id,String username, Role role,String slug,LocalDateTime requestedAt) {
+	public MembershipData(long id,String username, Role role,String slug) {
 		super();
 		this.id=id;
 		this.username = username;
 		this.role = role;
 		this.slug=slug;
-		this.requestedAt=requestedAt;
 	}
 	public String getUsername() {
 		return username;
@@ -29,8 +27,6 @@ public class MembershipData {
 	public long getId() {
 		return id;
 	}
-	public LocalDateTime getRequestedAt() {
-		return requestedAt;
-	}
+	
 	
 }

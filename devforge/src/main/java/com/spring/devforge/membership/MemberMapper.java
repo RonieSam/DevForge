@@ -6,8 +6,7 @@ public class MemberMapper {
 				m.getId(),
 				m.getUser().getUsername(),
 				m.getRole(),
-				m.getOrg().getSlug(),
-				m.getJoinedAt()
+				m.getOrg().getSlug()
 		);
 	}
 }

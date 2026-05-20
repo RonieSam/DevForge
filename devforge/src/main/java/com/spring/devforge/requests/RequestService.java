@@ -63,21 +63,18 @@ public class RequestService {
 		repo.save(req);
 		return RequestMapper.toData(req);
 	}
-	public List<RequestData> handleGetAllRequests(String slug) throws  AccessDeniedException{
-		Organization org=orgRepo.findBySlug(slug);
-		Membership membership=memService.getMembership(slug);
-		permService.checkPermissions(membership.getRole(),Permissions.REQUEST_VIEW);
-		List<Request> reqs=new ArrayList<>();
-		reqs=repo.findAllByOrgId(org.getId());
+	
+	public List<RequestData> handleGetAllRequests(long orgId) throws  AccessDeniedException{
+		List<Request> reqs=repo.findAllByOrgIdAndStatus(orgId,RequestStatus.PENDING);
 		return reqs.stream().map(RequestMapper::toData).toList();
 	}
 	
-	public RequestData handleReviewRequest(long id,RequestStatus status,String slug) throws AccessDeniedException, BadRequestException {
+	public RequestData handleReviewRequest(long id,RequestStatus status) throws AccessDeniedException, BadRequestException {
 		Request req=repo.findById(id).orElse(null);
 		if(req==null)throw new EntityNotFoundException("The request does not exisit");
 		if(memRepo.existsByUserIdAndOrgId(req.getUser().getId(), req.getOrg().getId()))throw new BadRequestException("User already part of the organization");
 		
-		Membership reqMembership=memService.getMembership(slug);
+		Membership reqMembership=memService.getMembership(req.getOrg().getSlug());
 		permService.checkPermissions(reqMembership.getRole(),Permissions.REQUEST_APPROVE);
 		if(status==RequestStatus.APPROVED) {
 			Membership newMembership=new Membership(req.getUser(),req.getOrg(),Role.USER);
@@ -88,11 +85,11 @@ public class RequestService {
 		return RequestMapper.toData(req);
 	}
 	
-	public void handleDeleteRequest(long id,String slug) throws AccessDeniedException {
-		Membership reqMembership=memService.getMembership(slug);
-		permService.checkPermissions(reqMembership.getRole(), Permissions.REQUEST_DELETE);
-		Request req=repo.findById(id).orElse(null);
-		if(req==null)throw new EntityNotFoundException("The request does not exisit");
-		repo.deleteById(id);
-	}
+//	public void handleDeleteRequest(long id,String slug) throws AccessDeniedException {
+//		Membership reqMembership=memService.getMembership(slug);
+//		permService.checkPermissions(reqMembership.getRole(), Permissions.REQUEST_DELETE);
+//		Request req=repo.findById(id).orElse(null);
+//		if(req==null)throw new EntityNotFoundException("The request does not exisit");
+//		repo.deleteById(id);
+//	}
 }

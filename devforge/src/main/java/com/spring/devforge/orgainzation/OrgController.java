@@ -59,4 +59,10 @@ public class OrgController {
 		List<OrgData> data=orgService.handleGetOrgPrefix(pre);
 		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
 	}
+	
+	@GetMapping("/org/{id}")
+	public ResponseEntity<ApiResponse> getOrg(@PathVariable long id) throws AccessDeniedException{
+		OrgInfo data=orgService.handleGetOrg(id);
+		return new ResponseEntity<>(new ApiResponse(true,"",data),HttpStatus.OK);
+	}
 }	
