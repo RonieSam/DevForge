@@ -40,7 +40,7 @@ public class CustomSecurityConfiguration {
 				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 				.cors(cors->cors.configurationSource(request->{
 					var config=new CorsConfiguration();
-					config.setAllowedOrigins(List.of("http://localhost:3000"));
+					config.setAllowedOrigins(List.of("https://dev-forge-alpha.vercel.app","http://localhost:3000"));
 					config.setAllowedMethods(List.of("*"));
 					config.setAllowedHeaders(List.of("*"));
 					config.setAllowCredentials(true);
