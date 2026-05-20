@@ -16,7 +16,7 @@ export default function SocketProvider({ children }) {
 
     const client = new Client({
       webSocketFactory: () =>
-      new SockJS(`${NEXT_PUBLIC_API_URL}/ws`), 
+      new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/ws`), 
 
       reconnectDelay: 5000,
 
