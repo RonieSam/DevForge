@@ -54,10 +54,11 @@ public class Organization {
 		
 	}
 	
-	public Organization(String name, Users owner) {
+	public Organization(String name, Users owner,String slug) {
 		super();
 		this.name = name;
 		this.owner = owner;
+		this.slug=slug;
 	}
 	
 	

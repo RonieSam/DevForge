@@ -47,11 +47,10 @@ public class OrgService {
 		return orgs.stream().map(UserOrgMapper::toData).toList();
 	}
 	
-	public OrgData handleOrgCreation(Organization org)throws EntityNotFoundException{
+	public OrgData handleOrgCreation(String name)throws EntityNotFoundException{
 		Users owner=authService.getUser();	
 		if(owner==null)throw new EntityNotFoundException("This account is invalid");
-		org.setOwner(owner);
-		String baseSlug=org.getName()
+		String baseSlug=name
 				.toLowerCase()
 				.trim()
 				.replace(' ', '-');
@@ -62,7 +61,7 @@ public class OrgService {
 			slug=baseSlug+'-'+cnt;
 			cnt++;
 		}
-		org.setSlug(slug);
+		Organization org=new Organization(name,owner,slug);
 		repo.save(org);
 		membershipService.handleOwnerCreation(org, owner);
 		return OrgMapper.toData(org);
