@@ -2,6 +2,7 @@
 import { OrgContext } from "@/context/OrgContext";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import OrgRequest from "@/components/OrgRequest";
+import CreateOrganizationModal from "@/components/OrgForm";
 
 export default function Org() {
   const {
@@ -11,11 +12,18 @@ export default function Org() {
     checkIfMember,
     selectOrg,
     sendRequest,
+    handleCreateOrg
   } = useContext(OrgContext);
+
+
 
   const [search, setSearch] = useState("");
   const [hasRequest, setHasRequest] = useState(null);
   const searchRef = useRef();
+  const [isOpen,setIsOpen]=useState(false)
+  const [orgName,setOrgName]=useState("")
+
+
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -45,8 +53,20 @@ export default function Org() {
     }
   }
 
+  function onClose(){
+    setOrgName("")
+    setIsOpen(false)
+  }
+
+  async function onCreate(){
+    await handleCreateOrg(orgName)
+    setOrgName("")
+    setIsOpen(false)
+  }
+
   return (
     <div className="p-6 bg-gray-50 min-h-full">
+      <CreateOrganizationModal onCreate={onCreate} onClose={onClose} isOpen={isOpen} orgName={orgName} setOrgName={setOrgName}/>
       <div className="max-w-2xl mx-auto space-y-6">
 
         {/* Search Card */}
@@ -61,7 +81,7 @@ export default function Org() {
               onChange={(e) => setSearch(e.target.value)}
             />
 
-            <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition shrink-0">
+            <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition shrink-0" onClick={()=>setIsOpen(true)}>
               + New
             </button>
 

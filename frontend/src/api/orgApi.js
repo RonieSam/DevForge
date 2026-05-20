@@ -1,3 +1,4 @@
+import { AArrowDown } from "lucide-react";
 import { apiClient } from "./apiClient";
 
 export async function getAllUserOrgApi(){
@@ -11,6 +12,20 @@ export async function getAllUserOrgApi(){
         throw e
     }
     
+}
+
+export async function createOrganization(orgName){
+    try{
+        const data={"name":orgName}
+        console.log(data)
+        const res=await apiClient.post("/org",data)
+        return res.data.data
+    }
+    catch(e){
+        console.log(e.message)
+    
+        throw e
+    }
 }
 
 export async function getProjects(org){

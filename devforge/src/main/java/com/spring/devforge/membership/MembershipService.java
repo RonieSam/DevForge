@@ -76,8 +76,10 @@ public class MembershipService {
 		    return MemberMapper.toData(membership);
 	}
 	
-	public void handleOwnerCreation(Organization org,Users owner) {
-		repo.save(new Membership(owner,org,Role.OWNER));
+	public Membership handleOwnerCreation(Organization org,Users owner) {
+		Membership membership=new Membership(owner,org,Role.OWNER);
+		repo.save(membership);
+		return membership;
 	}
 	
 	

@@ -47,7 +47,7 @@ public class OrgService {
 		return orgs.stream().map(UserOrgMapper::toData).toList();
 	}
 	
-	public OrgData handleOrgCreation(String name)throws EntityNotFoundException{
+	public UserOrgData handleOrgCreation(String name)throws EntityNotFoundException{
 		Users owner=authService.getUser();	
 		if(owner==null)throw new EntityNotFoundException("This account is invalid");
 		String baseSlug=name
@@ -63,8 +63,8 @@ public class OrgService {
 		}
 		Organization org=new Organization(name,owner,slug);
 		repo.save(org);
-		membershipService.handleOwnerCreation(org, owner);
-		return OrgMapper.toData(org);
+		Membership mem=membershipService.handleOwnerCreation(org, owner);
+		return UserOrgMapper.toData(mem);
 	}
 	
 	

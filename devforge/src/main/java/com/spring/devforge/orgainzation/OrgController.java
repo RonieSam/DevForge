@@ -30,7 +30,7 @@ public class OrgController {
 	
 	@PostMapping("/org")
 	public ResponseEntity<ApiResponse> createOrg(@RequestBody OrgDTO org){
-		OrgData data=orgService.handleOrgCreation(org.getName());
+		UserOrgData data=orgService.handleOrgCreation(org.getName());
 		return new ResponseEntity<>(new ApiResponse(true,"Organization has been successfully created",data),HttpStatus.CREATED);
 
 	}

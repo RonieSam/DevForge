@@ -18,7 +18,7 @@ export default function SocketProvider({ children }) {
       webSocketFactory: () =>
       new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/ws`), 
 
-      reconnectDelay: 5000,
+      reconnectDelay: 50000,
 
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,

@@ -1,5 +1,5 @@
 'use client';
-import { getAllUserOrgApi, getOrgPrefix, getProjects, isMember, sendRequestApi } from "@/api/orgApi";
+import { createOrganization, getAllUserOrgApi, getOrgPrefix, getProjects, isMember, sendRequestApi } from "@/api/orgApi";
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthProvider";
 import { createProject } from "@/api/projApi";
@@ -38,6 +38,11 @@ export default function OrgProvider({children}){
         catch(e){
             throw e;
         }
+    }
+
+    async function handleCreateOrg(orgName){
+        const data=await createOrganization(orgName);
+        selectOrg(data)
     }
 
 
@@ -79,7 +84,7 @@ export default function OrgProvider({children}){
         return proj.id;
     }
     return(
-        <OrgContext.Provider value={{org,allUserOrgs,selectOrg,getOrgsQuery,allOrgs,checkIfMember,sendRequest,allProjects,checkPermission,projectAccessCheck,onProjectCreation}}>
+        <OrgContext.Provider value={{org,allUserOrgs,selectOrg,getOrgsQuery,allOrgs,checkIfMember,sendRequest,allProjects,checkPermission,projectAccessCheck,onProjectCreation,handleCreateOrg}}>
             {children}
         </OrgContext.Provider>
     )
