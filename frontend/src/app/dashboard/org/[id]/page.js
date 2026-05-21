@@ -1,66 +1,69 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   Bell,
   MoreVertical,
   Pencil,
   ChevronDown,
 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { getOrg, reviewRequest } from "@/api/orgApi";
+import toast from "react-hot-toast";
+import { AuthContext } from "@/context/AuthProvider";
 
 export default function OrganizationInfoPage() {
+  const params=useParams();
   const [editing, setEditing] = useState(false);
-  const [orgName, setOrgName] = useState("Aura Labs");
+  const [org, setOrg] = useState(null);
+  const [showRequests, setShowRequests] = useState(false);
 
   const [sortBy, setSortBy] = useState("name");
   const [order, setOrder] = useState("asc");
+  const router=useRouter()
 
-  const members = [
-    {
-      id: 1,
-      name: "Ronie",
-      role: "Owner",
-    },
-    {
-      id: 2,
-      name: "Arjun",
-      role: "Admin",
-    },
-    {
-      id: 3,
-      name: "Karan",
-      role: "Member",
-    },
-    {
-      id: 4,
-      name: "Zayan",
-      role: "Member",
-    },
-  ];
-
-  const projects = [
-    "Aura Nexus",
-    "ROV Dashboard",
-    "Realtime Chat",
-    "Telemetry System",
-  ];
-
-  const sortedMembers = useMemo(() => {
-    return [...members].sort((a, b) => {
-      const valA = a[sortBy].toLowerCase();
-      const valB = b[sortBy].toLowerCase();
-
-      if (order === "asc") {
-        return valA.localeCompare(valB);
+  const {setLoading}=useContext(AuthContext)
+  useEffect(()=>{
+    async function initialize(){
+      try{
+        const data=await getOrg(params.id);
+        console.log(data)
+        setOrg(data)
+      }catch(e){
+        toast.error("Couldn't load organization",{id:"orgError"})
+        router.push("/dashboard")
       }
+    }
+    setLoading(true)
+    initialize()
+    setLoading(false)
+  },[])
 
-      return valB.localeCompare(valA);
-    });
-  }, [sortBy, order]);
+  const handleRequestAction = (requestId) => {
+    setOrg((prev) => ({
+      ...prev,
+      requests: prev.requests.filter(
+        (request) => request.id !== requestId
+      ),
+    }));
+  };
+  const sortedMembers = useMemo(() => {
+  if (!org?.members) return [];
 
+  return [...org.members].sort((a, b) => {
+    const valA = a[sortBy]?.toLowerCase() || "";
+    const valB = b[sortBy]?.toLowerCase() || "";
+
+    if (order === "asc") {
+      return valA.localeCompare(valB);
+    }
+
+    return valB.localeCompare(valA);
+  });
+}, [org, sortBy, order]);
   return (
     <div className="min-h-screen bg-[#f5f5f5] p-6">
-      <div className="mx-auto max-w-6xl space-y-6">
+      {org&&<div className="mx-auto max-w-6xl space-y-6">
 
         {/* Top Section */}
         <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
@@ -70,7 +73,7 @@ export default function OrganizationInfoPage() {
               {!editing ? (
                 <div className="flex items-center gap-3">
                   <h1 className="text-3xl font-bold text-black">
-                    {orgName}
+                    {org.name}
                   </h1>
 
                   <button
@@ -83,7 +86,7 @@ export default function OrganizationInfoPage() {
               ) : (
                 <div className="flex items-center gap-3">
                   <input
-                    value={orgName}
+                    value={org.name}
                     onChange={(e) => setOrgName(e.target.value)}
                     className="rounded-xl border border-black/20 px-4 py-2 text-xl font-semibold outline-none focus:border-black"
                   />
@@ -100,19 +103,100 @@ export default function OrganizationInfoPage() {
               <p className="text-sm text-neutral-500">
                 Created by{" "}
                 <span className="font-medium text-black">
-                  Ronie
+                 {org.creator}
                 </span>
               </p>
             </div>
 
             {/* Request Bell */}
-            <button className="relative rounded-xl border border-black/10 p-3 hover:bg-black/5 transition">
-              <Bell size={20} />
+            {/* Request Bell */}
+<div className="relative">
+  <button
+    onClick={() => setShowRequests((prev) => !prev)}
+    className="relative rounded-xl border border-black/10 p-3 transition hover:bg-black/5"
+  >
+    <Bell size={20} />
 
-              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
-                3
-              </span>
-            </button>
+    {org.requests?.length > 0 && (
+      <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
+        {org.requests.length}
+      </span>
+    )}
+  </button>
+
+  {/* Requests Popup */}
+  {showRequests && (
+    <div className="absolute right-0 top-16 z-50 w-96 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-2xl">
+      
+      <div className="border-b border-black/10 px-5 py-4">
+        <h2 className="text-lg font-semibold text-black">
+          Join Requests
+        </h2>
+
+        <p className="text-sm text-neutral-500">
+          {org.requests?.length || 0} pending requests
+        </p>
+      </div>
+
+      <div className="max-h-[400px] overflow-y-auto">
+        
+        {org.requests?.length === 0 && (
+          <div className="px-5 py-10 text-center text-sm text-neutral-500">
+            No pending requests
+          </div>
+        )}
+
+        {org.requests?.map((request) => (
+          <div
+            key={request.id}
+            className="border-b border-black/5 px-5 py-4 last:border-none"
+          >
+            <div className="flex items-start justify-between gap-4">
+
+              <div className="min-w-0 flex-1">
+                <h3 className="font-medium text-black">
+                  {request.username}
+                </h3>
+
+                <p className="mt-1 text-sm text-neutral-500 break-words">
+                  {request.msg}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-2">
+
+                {/* Accept */}
+                <button
+                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-100 text-green-600 transition hover:bg-green-200"
+                  onClick={() => {
+                    reviewRequest(request.id,"APPROVED")
+                    handleRequestAction(request.id)
+                  }}
+                >
+                  ✓
+                </button>
+
+                {/* Reject */}
+                <button
+                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-100 text-red-500 transition hover:bg-red-200"
+                  onClick={() => {
+                    reviewRequest(request.id,"REJECTED")
+                    handleRequestAction(request.id)
+                  }}
+                >
+                  ✕
+                </button>
+
+              </div>
+            </div>
+          </div>
+        ))}
+
+      </div>
+    </div>
+  )}
+</div>
           </div>
         </div>
 
@@ -127,7 +211,7 @@ export default function OrganizationInfoPage() {
               </h2>
 
               <p className="text-sm text-neutral-500 mt-1">
-                {members.length} members in this organization
+                {org.members.length} members in this organization
               </p>
             </div>
 
@@ -140,7 +224,7 @@ export default function OrganizationInfoPage() {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="appearance-none rounded-xl border border-black/10 bg-white px-4 py-2 pr-10 text-sm outline-none"
                 >
-                  <option value="name">Sort by Name</option>
+                  <option value="username">Sort by Username</option>
                   <option value="role">Sort by Role</option>
                 </select>
 
@@ -180,7 +264,7 @@ export default function OrganizationInfoPage() {
 
                 <div>
                   <h3 className="font-medium text-black">
-                    {member.name}
+                    {member.username}
                   </h3>
 
                   <p className="text-sm text-neutral-500">
@@ -221,25 +305,25 @@ export default function OrganizationInfoPage() {
             </h2>
 
             <span className="rounded-full bg-black px-3 py-1 text-xs text-white">
-              {projects.length}
+              {org.projects.length}
             </span>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
-            {projects.map((project, index) => (
+            {org.projects.map((project, index) => (
               <div
                 key={index}
                 className="rounded-xl border border-black/10 px-4 py-4 hover:bg-neutral-50 transition"
               >
                 <h3 className="font-medium text-black">
-                  {project}
+                  {project.name}
                 </h3>
               </div>
             ))}
           </div>
         </div>
 
-      </div>
+      </div>}
     </div>
   );
 }

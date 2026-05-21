@@ -57,7 +57,7 @@ export default function CreateOrganizationModal({
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-black py-3 font-medium text-white transition hover:bg-gray-800"
+            className="w-full rounded-xl bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-800"
           >
             Create
           </button>

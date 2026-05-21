@@ -73,7 +73,29 @@ export async function sendRequestApi(slug,msg){
     }
     catch(e){
         console.log(e.message)
-
         throw e;
     }
 }
+
+export async function getOrg(id){
+    
+    try{
+        const res=await apiClient.get(`/org/${id}`)
+        return res.data.data
+    }
+    catch(e){
+        console.log(e);
+        throw(e);
+    }
+}
+
+export async function reviewRequest(id,status){
+    try{
+        await apiClient.post(`/request/${id}`,{"status":status})
+    }
+    catch(e){
+        console.log(e)
+        throw(e)
+    }
+}
+

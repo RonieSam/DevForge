@@ -123,7 +123,7 @@ export default function ProjectWorkspace() {
                     {checkPermission("PROJECT_UPDATE") && (
                       <div className="flex justify-end">
                         <button
-                          className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition"
+                          className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-800 transition"
                           onClick={() => setEdit(true)}
                         >
                           Edit Project
@@ -229,7 +229,7 @@ export default function ProjectWorkspace() {
                       onChange={(e) => { setContent(e.target.value) }}
                     />
                     <button
-                      className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shrink-0"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition shrink-0"
                       onClick={handleSendMsg}
                     >
                       Send

@@ -9,15 +9,17 @@ import com.spring.devforge.requests.RequestData;
 
 public class OrgInfo {
 	long id;
+	String name;
 	String slug;
 	String owner;
 	List<MembershipData> members;
 	List<RequestData> requests;
 	List<ProjectInfo> projects;
-	public OrgInfo(long id, String slug, String owner, List<MembershipData> members,
+	public OrgInfo(long id,String name ,String slug, String owner, List<MembershipData> members,
 			List<RequestData> requests, List<ProjectInfo> projects) {
 		super();
 		this.id = id;
+		this.name=name;
 		this.slug = slug;
 		this.owner = owner;
 		this.members = members;
@@ -41,6 +43,9 @@ public class OrgInfo {
 	}
 	public List<ProjectInfo> getProjects() {
 		return projects;
+	}
+	public String getName() {
+		return name;
 	}
 	
 	

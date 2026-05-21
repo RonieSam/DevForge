@@ -3,6 +3,7 @@ import { OrgContext } from "@/context/OrgContext";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import OrgRequest from "@/components/OrgRequest";
 import CreateOrganizationModal from "@/components/OrgForm";
+import Link from "next/link";
 
 export default function Org() {
   const {
@@ -89,15 +90,15 @@ export default function Org() {
             {search.trim().length > 1 && (
               <div ref={searchRef} className="absolute top-full mt-1.5 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50">
                 {allOrgs.map((org) => (
-                  <div
+                  <Link
+                    href={`/dashboard/org/${org.id}`}
                     key={org.id}
-                    onClick={() => handleSelectOrg(org)}
                     className="px-4 py-2.5 flex justify-between text-sm hover:bg-gray-50 cursor-pointer transition"
                   >
                     <span className="font-medium text-gray-800">{org.name}</span>
                     <span className="text-gray-400">{org.slug}</span>
                     <span className="text-gray-300">{org.owner}</span>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -122,7 +123,8 @@ export default function Org() {
           {allUserOrgs && (
             <div className="flex flex-col gap-1">
               {allUserOrgs.map((org) => (
-                <div
+                <Link
+                  href={`/dashboard/org/${org.id}`}
                   onClick={() => handleSelectOrg(org)}
                   key={org.id}
                   className="flex justify-between items-center px-4 py-3 rounded-lg hover:bg-gray-50 cursor-pointer transition"
@@ -139,7 +141,7 @@ export default function Org() {
                   <div className="text-xs text-gray-400">
                     {org.owner}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

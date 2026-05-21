@@ -67,6 +67,7 @@ public class OrgService {
 		List<ProjectInfo> projects=projService.handleGetAllProject(org.getSlug());
 		return new OrgInfo(
 				org.getId(),
+				org.getName(),
 				org.getSlug(),
 				org.getOwner().getUsername(),
 				members,
