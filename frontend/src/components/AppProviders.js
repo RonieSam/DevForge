@@ -10,8 +10,10 @@ export default function AppProviders({ children }) {
         <MobileMenuProvider>
             <OrgProvider>
                 <TaskProvider>
+                    <SocketProvider>
                         <Toaster position="top-right" />
                         {children}
+                    </SocketProvider>
                 </TaskProvider>
             </OrgProvider>
         </MobileMenuProvider>
