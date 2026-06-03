@@ -51,7 +51,6 @@ export default function AuthProvider({children}) {
         setLoading(false)
       }
       catch(e){
-        toast.error("Invalid Email or Password")
         router.push("/login")
         setLoading(false) 
       }

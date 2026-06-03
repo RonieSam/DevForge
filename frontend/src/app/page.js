@@ -8,6 +8,7 @@ import {
   Activity,
   Users,
 } from "lucide-react";
+import Link from "next/link";
 
 import { FaGithub } from "react-icons/fa";
 
@@ -92,17 +93,20 @@ export default function LandingPage() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link href="/signup">
             <button
-              onClick={() => scrollToSection("features")}
               className="rounded-2xl bg-blue-600 px-7 py-4 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
             >
               Start for free
             </button>
-
-            <button className="flex items-center gap-2 rounded-2xl border border-neutral-300 px-7 py-4 text-sm font-semibold transition hover:bg-neutral-100">
-              <FaGithub size={18} />
-              View on GitHub
-            </button>
+            </Link>
+            <Link target="_blank" href="https://github.com/RonieSam/DevForge">
+              <button className="flex items-center gap-2 rounded-2xl border border-neutral-300 px-7 py-4 text-sm font-semibold transition hover:bg-neutral-100">
+                <FaGithub size={18} />
+                View on GitHub
+              </button>
+            </Link>
+            
           </div>
 
           {/* MOCKUP */}
@@ -311,13 +315,14 @@ export default function LandingPage() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link href="/signup">
+
             <button
-              onClick={() => scrollToSection("features")}
               className="rounded-2xl bg-blue-600 px-7 py-4 text-sm font-semibold text-white hover:bg-blue-700"
             >
               Start for free
             </button>
-
+            </Link>
             <button className="rounded-2xl border border-neutral-300 px-7 py-4 text-sm font-semibold hover:bg-neutral-100">
               View demo
             </button>
@@ -334,9 +339,9 @@ export default function LandingPage() {
           <p>DevForge · Built by Ronie Samuel</p>
 
           <div className="flex gap-6">
-            <a href="#">GitHub</a>
-            <a href="#">Sign In</a>
-            <a href="#">Sign Up</a>
+            <Link href="https://github.com/RonieSam/DevForge" target="_blank">GitHub</Link>
+            <Link href="/login">Sign In</Link>
+            <Link href="/signup">Sign Up</Link>
           </div>
         </div>
       </footer>

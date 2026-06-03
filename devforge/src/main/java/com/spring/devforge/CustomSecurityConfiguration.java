@@ -31,7 +31,7 @@ public class CustomSecurityConfiguration {
 	public SecurityFilterChain filterChain(HttpSecurity http) {
 		return http
 				.authorizeHttpRequests(auth->{
-					auth.requestMatchers("/auth/**","/h2-console/**").permitAll();
+					auth.requestMatchers("/auth/**","/h2-console/**","/check").permitAll();
 					auth.anyRequest().authenticated();
 				})
 				.csrf(csrf -> csrf.disable())

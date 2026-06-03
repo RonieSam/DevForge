@@ -2,6 +2,7 @@ package com.spring.devforge.orgainzation;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import com.spring.devforge.membership.MembershipDataJpa;
 import com.spring.devforge.membership.MembershipService;
 import com.spring.devforge.permissions.PermissionService;
 import com.spring.devforge.permissions.Permissions;
+import com.spring.devforge.permissions.RolePermissions;
 import com.spring.devforge.project.ProjectInfo;
 import com.spring.devforge.project.ProjectService;
 import com.spring.devforge.requests.RequestData;
@@ -63,7 +65,7 @@ public class OrgService {
 		Membership mem=membershipService.getMembership(org.getSlug());
 		List<MembershipData> members=membershipService.handleGetAllMembers(id);
 		List<RequestData> requests=reqService.handleGetAllRequests(id);
-		
+		Set<Permissions> perms=RolePermissions.getPermissions(mem.getRole());
 		List<ProjectInfo> projects=projService.handleGetAllProject(org.getSlug());
 		return new OrgInfo(
 				org.getId(),
@@ -72,7 +74,8 @@ public class OrgService {
 				org.getOwner().getUsername(),
 				members,
 				requests,
-				projects
+				projects,
+				perms
 				);
 	}
 //	String slug, String owner, List<MembershipData> members,
@@ -98,11 +101,11 @@ public class OrgService {
 	}
 	
 	
-	public OrgData handleUpdateOrg(String slug,String name) throws AccessDeniedException{
-			Membership requesterMembership=membershipService.getMembership(slug);
+	public OrgInfo handleUpdateOrg(long id,String name) throws AccessDeniedException{
+		Organization org=repo.findById(id).orElseThrow(()->new EntityNotFoundException());
+			Membership requesterMembership=membershipService.getMembership(org.getSlug());
 			if(requesterMembership==null)throw new AccessDeniedException("Requester is not the part of the organization");
 			permService.checkPermissions(requesterMembership.getRole(), Permissions.ORGANIZATION_UPDATE);
-			Organization org=repo.findBySlug(slug);
 			org.setName(name);
 			String baseSlug=org.getName()
 					.toLowerCase()
@@ -117,15 +120,28 @@ public class OrgService {
 			}
 			org.setSlug(newSlug);
 			repo.save(org);
-			return OrgMapper.toData(org);
+			List<MembershipData> members=membershipService.handleGetAllMembers(id);
+			List<RequestData> requests=reqService.handleGetAllRequests(id);
+			Set<Permissions> perms=RolePermissions.getPermissions(requesterMembership.getRole());
+			List<ProjectInfo> projects=projService.handleGetAllProject(org.getSlug());
+			return new OrgInfo(
+					org.getId(),
+					org.getName(),
+					org.getSlug(),
+					org.getOwner().getUsername(),
+					members,
+					requests,
+					projects,
+					perms
+					);
 	}
 	
 	@Transactional
-	public void handleDeleteOrg(String slug) throws  AccessDeniedException {
-		Membership requesterMembership=membershipService.getMembership(slug);
+	public void handleDeleteOrg(long id) throws  AccessDeniedException {
+		Organization org=repo.findById(id).orElseThrow(()->new EntityNotFoundException());
+		Membership requesterMembership=membershipService.getMembership(org.getSlug());
 		if(requesterMembership==null)throw new AccessDeniedException("Requester is not the part of the organization");
 		permService.checkPermissions(requesterMembership.getRole(), Permissions.ORGAINZATION_DELETE);
-		Organization org=repo.findBySlug(slug);
 		membershipRepo.deleteAllByOrgId(org.getId());
 		repo.deleteById(org.getId());
 	}

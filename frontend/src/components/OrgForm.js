@@ -8,7 +8,7 @@ export default function CreateOrganizationModal({
   onClose,
   onCreate,
   orgName,
-  setOrgName,
+  setOrgName
 }) {
   if (!isOpen) return null;
 

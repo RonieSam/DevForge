@@ -94,7 +94,8 @@ application.yml
 # Node (if React frontend exists)
 
 # =========================
-
+.next
+frontend/.next/
 node_modules/
 dist/
 npm-debug.log*

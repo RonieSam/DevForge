@@ -15,6 +15,11 @@ export default function TeamMenu({ showTeams, setShowTeams }) {
       
       <Link
         href="/dashboard/org"
+        onClick={()=>{selectOrg(null)
+                setShowTeams(false)
+        }
+          
+        }
         className="block px-4 py-2.5 text-sm text-blue-600 font-medium hover:bg-gray-50 transition"
       >
         + New Team

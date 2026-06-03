@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import AuthProvider from "@/context/AuthProvider";
 import MainComponent from "@/components/MainComponent";
+import {BackendStatusProvider} from "@/context/BackendStatusProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,15 +21,20 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
+  
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col overflow-hidden bg-white">
+      <BackendStatusProvider>
         <AuthProvider>
           <MainComponent children={children} />
         </AuthProvider>
+      </BackendStatusProvider>
       </body>
     </html>
   );

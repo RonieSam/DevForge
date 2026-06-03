@@ -7,16 +7,21 @@ import { Toaster } from "react-hot-toast";
 import SocketProvider from "@/context/SocketContext";
 
 export default function AppProviders({ children }) {
-    return (
-        <MobileMenuProvider>
-            <OrgProvider>
-                <TaskProvider>
-                    <SocketProvider>
-                        <Toaster position="top-right" />
-                        {children}
-                    </SocketProvider>
-                </TaskProvider>
-            </OrgProvider>
-        </MobileMenuProvider>
-    );
+  return (
+    <MobileMenuProvider>
+      <OrgProvider>
+        <TaskProvider>
+          <SocketProvider>
+            <Toaster
+              position="top-right"
+              containerStyle={{
+                top: 60,
+              }}
+            />
+            {children}
+          </SocketProvider>
+        </TaskProvider>
+      </OrgProvider>
+    </MobileMenuProvider>
+  );
 }

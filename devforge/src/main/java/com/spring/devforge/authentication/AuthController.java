@@ -56,5 +56,10 @@ public class AuthController {
 		return new ResponseEntity<>(new ApiResponse(true,"Logged out",null),service.getCookieHeader("", 0),HttpStatus.OK);
 	}
 	
+	@GetMapping("/health")
+	public ResponseEntity<ApiResponse> healthCheck(){
+		return new ResponseEntity<>(new ApiResponse(true,"Online",null),HttpStatus.OK);
+	}
+	
 	
 }

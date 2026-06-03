@@ -17,7 +17,6 @@ export async function getAllUserOrgApi(){
 export async function createOrganization(orgName){
     try{
         const data={"name":orgName}
-        console.log(data)
         const res=await apiClient.post("/org",data)
         return res.data.data
     }
@@ -99,3 +98,16 @@ export async function reviewRequest(id,status){
     }
 }
 
+
+export async function updateOrg(id,name){
+    try{
+        const res=await apiClient.put(`/org/${id}`,{
+            "name":name
+        })
+        return res.data.data
+    }
+    catch(e){
+        console.log(e)
+        throw(e)
+    }
+}

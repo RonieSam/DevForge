@@ -11,23 +11,25 @@ import { useParams, useRouter } from "next/navigation";
 import { getOrg, reviewRequest } from "@/api/orgApi";
 import toast from "react-hot-toast";
 import { AuthContext } from "@/context/AuthProvider";
+import { OrgContext } from "@/context/OrgContext";
 
 export default function OrganizationInfoPage() {
   const params=useParams();
   const [editing, setEditing] = useState(false);
   const [org, setOrg] = useState(null);
   const [showRequests, setShowRequests] = useState(false);
-
+  const [orgName,setOrgName]=useState("")
   const [sortBy, setSortBy] = useState("name");
   const [order, setOrder] = useState("asc");
   const router=useRouter()
 
   const {setLoading}=useContext(AuthContext)
+  const {handleOrgUpdation}=useContext(OrgContext)
   useEffect(()=>{
     async function initialize(){
       try{
         const data=await getOrg(params.id);
-        console.log(data)
+        setOrgName(data.name)
         setOrg(data)
       }catch(e){
         toast.error("Couldn't load organization",{id:"orgError"})
@@ -39,6 +41,14 @@ export default function OrganizationInfoPage() {
     setLoading(false)
   },[])
 
+
+  async function onSave(){
+    const data=await handleOrgUpdation(org.id,orgName)
+    setOrg(data)
+    setEditing(false)
+
+
+  }
   const handleRequestAction = (requestId) => {
     setOrg((prev) => ({
       ...prev,
@@ -86,13 +96,13 @@ export default function OrganizationInfoPage() {
               ) : (
                 <div className="flex items-center gap-3">
                   <input
-                    value={org.name}
+                    value={orgName}
                     onChange={(e) => setOrgName(e.target.value)}
                     className="rounded-xl border border-black/20 px-4 py-2 text-xl font-semibold outline-none focus:border-black"
                   />
 
                   <button
-                    onClick={() => setEditing(false)}
+                    onClick={onSave}
                     className="rounded-xl bg-black px-4 py-2 text-sm text-white hover:bg-neutral-800 transition"
                   >
                     Save
@@ -103,7 +113,7 @@ export default function OrganizationInfoPage() {
               <p className="text-sm text-neutral-500">
                 Created by{" "}
                 <span className="font-medium text-black">
-                 {org.creator}
+                 {org.owner}
                 </span>
               </p>
             </div>

@@ -1,5 +1,6 @@
 
 'use client';
+import toast from "react-hot-toast";
 import { apiClient } from "./apiClient";
 
 
@@ -13,6 +14,7 @@ export async function LoginApi(email,password){
     
     }
     catch(err){
+        toast.error("Invalid Username or Password")
         throw(err)
     }   
 }

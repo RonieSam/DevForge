@@ -61,12 +61,8 @@ public class AuthService {
 	
 	public HttpHeaders getCookieHeader(String token,int age) {
 		ResponseCookie cookie=ResponseCookie.from("token",token)
-//				.httpOnly(true)
-//		        .secure(false)
-//		        .sameSite("Strict")
-//		        .path("/")
-//		        .maxAge(age)
-//		        .build();
+//				
+
 				.httpOnly(true)
 		        .secure(true)
 		        .sameSite("None")

@@ -35,16 +35,16 @@ public class OrgController {
 
 	}
 	
-	@PutMapping("/org/{slug}")
-	public ResponseEntity<ApiResponse> updateOrg(@RequestBody UpdateOrgRequest req,@PathVariable String slug) throws AccessDeniedException, AuthenticationException{
-		OrgData data=orgService.handleUpdateOrg(slug,req.getName());
+	@PutMapping("/org/{id}")
+	public ResponseEntity<ApiResponse> updateOrg(@RequestBody UpdateOrgRequest req,@PathVariable long id) throws AccessDeniedException, AuthenticationException{
+		OrgInfo data=orgService.handleUpdateOrg(id,req.getName());
 		return new ResponseEntity<>(new ApiResponse(true,"Organization has been successfully updated",data),HttpStatus.OK);
 
 	}
 	
-	@DeleteMapping("/org/{slug}")
-	public ResponseEntity<ApiResponse> deleteOrg(@PathVariable String slug) throws AuthenticationException, AccessDeniedException{
-		orgService.handleDeleteOrg(slug);
+	@DeleteMapping("/org/{id}")
+	public ResponseEntity<ApiResponse> deleteOrg(@PathVariable long id) throws AuthenticationException, AccessDeniedException{
+		orgService.handleDeleteOrg(id);
 		return new ResponseEntity<>(new ApiResponse(true,"Organization has been successfully deleted",null),HttpStatus.OK);
 	}
 	

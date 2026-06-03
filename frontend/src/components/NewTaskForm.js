@@ -23,6 +23,7 @@ export default function NewTaskForm({ setNewTask }) {
     e.preventDefault();
     console.log(form)
     handleCreateTask(form)
+    setNewTask(false)
   }
 
   return (

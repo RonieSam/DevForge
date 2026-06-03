@@ -11,7 +11,6 @@ export default function Org() {
     getOrgsQuery,
     allOrgs,
     checkIfMember,
-    selectOrg,
     sendRequest,
     handleCreateOrg
   } = useContext(OrgContext);
@@ -46,7 +45,6 @@ export default function Org() {
   async function handleSelectOrg(org) {
     const res = await checkIfMember(org.slug);
     if (res === true) {
-      selectOrg(org);
       setSearch("");
     } else {
       setHasRequest(org);
