@@ -43,7 +43,6 @@ export default function OrgProvider({children}){
 
     async function handleCreateOrg(orgName){
         const data=await createOrganization(orgName);
-        selectOrg(data)
     }
 
 
